@@ -3,30 +3,25 @@ import * as naclUtils from 'tweetnacl-util';
 
 class EncryptionService {
   constructor() {
-    // Llave de encriptación fija (en producción, usar variable de entorno)
     this.key = nacl.hash(naclUtils.decodeUTF8('joelbazar-secret-key'));
   }
 
-  // Encriptar texto
   encrypt(plaintext) {
     try {
       const nonce = nacl.randomBytes(nacl.secretbox.nonceLength);
       const plainBytes = naclUtils.decodeUTF8(plaintext);
       const encrypted = nacl.secretbox(plainBytes, nonce, this.key);
 
-      // Combinar nonce + encrypted en base64
       const full = new Uint8Array(nonce.length + encrypted.length);
       full.set(nonce);
       full.set(encrypted, nonce.length);
 
       return naclUtils.encodeBase64(full);
     } catch (error) {
-      console.error('Encryption error:', error);
       throw new Error('Error encriptando datos');
     }
   }
 
-  // Desencriptar texto
   decrypt(ciphertext) {
     try {
       const full = naclUtils.decodeBase64(ciphertext);
@@ -40,17 +35,14 @@ class EncryptionService {
 
       return naclUtils.encodeUTF8(plainBytes);
     } catch (error) {
-      console.error('Decryption error:', error);
       throw new Error('Error desencriptando datos');
     }
   }
 
-  // Encriptar Airtable token
   encryptToken(token) {
     return this.encrypt(token);
   }
 
-  // Desencriptar Airtable token
   decryptToken(encryptedToken) {
     return this.decrypt(encryptedToken);
   }

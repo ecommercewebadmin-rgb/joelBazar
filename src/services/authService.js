@@ -4,22 +4,20 @@ class AuthService {
     this.userKey = 'admin_user';
   }
 
-  // Generar JWT simple (sin librerías)
   generateToken(username) {
     const header = btoa(JSON.stringify({ alg: 'HS256', typ: 'JWT' }));
     const payload = btoa(
       JSON.stringify({
         username,
         iat: Math.floor(Date.now() / 1000),
-        exp: Math.floor(Date.now() / 1000) + 3600 * 2, // 2 horas
+        exp: Math.floor(Date.now() / 1000) + 3600 * 2,
       })
     );
-    const signature = btoa(`${header}.${payload}`); // Simulado
+    const signature = btoa(`${header}.${payload}`);
 
     return `${header}.${payload}.${signature}`;
   }
 
-  // Validar credenciales
   validateCredentials(username, password) {
     const expectedUsername = import.meta.env.VITE_ADMIN_USERNAME;
     const expectedPassword = import.meta.env.VITE_ADMIN_PASSWORD;
@@ -27,7 +25,6 @@ class AuthService {
     return username === expectedUsername && password === expectedPassword;
   }
 
-  // Login
   login(username, password) {
     if (!this.validateCredentials(username, password)) {
       throw new Error('Credenciales inválidas');
@@ -40,22 +37,19 @@ class AuthService {
     return {
       token,
       username,
-      expiresIn: 7200, // 2 horas en segundos
+      expiresIn: 7200,
     };
   }
 
-  // Logout
   logout() {
     localStorage.removeItem(this.storageKey);
     localStorage.removeItem(this.userKey);
   }
 
-  // Obtener token actual
   getToken() {
     return localStorage.getItem(this.storageKey);
   }
 
-  // Verificar si está autenticado
   isAuthenticated() {
     const token = this.getToken();
     if (!token) return false;
@@ -73,7 +67,6 @@ class AuthService {
     }
   }
 
-  // Obtener usuario actual
   getCurrentUser() {
     return localStorage.getItem(this.userKey);
   }

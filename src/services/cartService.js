@@ -1,22 +1,19 @@
 class CartService {
   constructor() {
     this.storageKey = 'cart_items';
-    this.maxQuantityPerProduct = 999; // límite realista
+    this.maxQuantityPerProduct = 999;
   }
 
-  // Obtener carrito
   getCart() {
     const cart = localStorage.getItem(this.storageKey);
     return cart ? JSON.parse(cart) : [];
   }
 
-  // Guardar carrito
   saveCart(cart) {
     localStorage.setItem(this.storageKey, JSON.stringify(cart));
     this.notifyChange();
   }
 
-  // Agregar al carrito
   addToCart(product, quantity = 1, selectedColor = null, selectedSize = null) {
     if (quantity < 1 || quantity > this.maxQuantityPerProduct) {
       throw new Error(`Cantidad inválida`);
@@ -28,10 +25,8 @@ class CartService {
     const existingIndex = cart.findIndex(item => item.itemKey === itemKey);
 
     if (existingIndex >= 0) {
-      // Aumentar cantidad
       cart[existingIndex].quantity += quantity;
     } else {
-      // Nuevo item
       cart.push({
         itemKey,
         id: product.id,
@@ -48,7 +43,6 @@ class CartService {
     return cart;
   }
 
-  // Actualizar cantidad
   updateQuantity(itemKey, quantity) {
     if (quantity < 0) {
       return this.removeFromCart(itemKey);
@@ -65,7 +59,6 @@ class CartService {
     return cart;
   }
 
-  // Eliminar del carrito
   removeFromCart(itemKey) {
     const cart = this.getCart();
     const filtered = cart.filter(item => item.itemKey !== itemKey);
@@ -73,31 +66,26 @@ class CartService {
     return filtered;
   }
 
-  // Vaciar carrito
   clearCart() {
     localStorage.removeItem(this.storageKey);
     this.notifyChange();
     return [];
   }
 
-  // Calcular total
   getTotal() {
     const cart = this.getCart();
     return cart.reduce((sum, item) => sum + item.precio * item.quantity, 0);
   }
 
-  // Obtener cantidad de items
   getItemCount() {
     const cart = this.getCart();
     return cart.reduce((sum, item) => sum + item.quantity, 0);
   }
 
-  // Generar key única por item (con color/talla si aplican)
   generateItemKey(productId, color, size) {
     return `${productId}_${color || 'default'}_${size || 'default'}`;
   }
 
-  // Notificar cambios (para listeners)
   notifyChange() {
     const event = new CustomEvent('cartChanged', {
       detail: { cart: this.getCart(), total: this.getTotal() },
@@ -105,7 +93,6 @@ class CartService {
     window.dispatchEvent(event);
   }
 
-  // Obtener carrito para checkout
   getCheckoutData() {
     const cart = this.getCart();
     return cart.map(item => ({

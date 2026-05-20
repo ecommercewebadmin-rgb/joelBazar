@@ -1,7 +1,6 @@
 import { airtableService } from './airtableService.js';
 
 class OrderService {
-  // Generar número de orden único
   generateOrderNumber() {
     const date = new Date();
     const dateStr = date.toISOString().split('T')[0].replace(/-/g, '');
@@ -11,7 +10,6 @@ class OrderService {
     return `ORD-${dateStr}-${random}`;
   }
 
-  // Crear orden
   async createOrder(customerData, cartItems, paymentMethod) {
     try {
       const orderData = {
@@ -33,17 +31,14 @@ class OrderService {
       const order = await airtableService.createOrder(orderData);
       return order;
     } catch (error) {
-      console.error('Error creando orden:', error);
       throw error;
     }
   }
 
-  // Obtener órdenes
   async getOrders() {
     return airtableService.getOrders();
   }
 
-  // Actualizar estado de orden
   async updateOrderStatus(orderId, newStatus) {
     try {
       return await airtableService.updateOrder(orderId, {
@@ -51,12 +46,10 @@ class OrderService {
         actualizado_en: new Date().toISOString(),
       });
     } catch (error) {
-      console.error('Error actualizando orden:', error);
       throw error;
     }
   }
 
-  // Marcar como pagado (desde webhook de MP o confirmación manual)
   async markAsPaid(orderId, referenceId = null) {
     const updateData = {
       estado: 'pagado',

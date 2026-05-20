@@ -1,19 +1,9 @@
-// Punto de entrada de la aplicación
-console.log('🚀 joelBazar cargando...');
+import { App } from './app.js';
+import { getHomeController } from './pages/homeController.js';
 
-// Importar servicios y componentes cuando estén listos
-// import { initializeApp } from './app.js';
-
-// Elemento raíz de la SPA
-const appRoot = document.getElementById('app');
-
-if (!appRoot) {
-  console.error('❌ No se encontró elemento #app en el HTML');
-} else {
-  console.log('✅ Elemento #app encontrado');
-  // Aquí se inicializará la aplicación
-  // initializeApp(appRoot);
+try {
+  const app = new App();
+  getHomeController();
+} catch (error) {
+  // Manejo silencioso de errores críticos en producción
 }
-
-// Exportar para testing
-export { appRoot };
