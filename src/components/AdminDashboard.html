@@ -1,0 +1,182 @@
+<main id="admin-dashboard-view" class="py-4">
+  <div class="container-fluid">
+
+    <!-- Header del Dashboard -->
+    <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
+      <h2>📊 Dashboard Admin</h2>
+      <button class="btn btn-outline-danger" id="logout-btn">
+        Salir
+      </button>
+    </div>
+
+    <!-- Tabs de navegación -->
+    <ul class="nav nav-tabs mb-4" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="products-tab" data-bs-toggle="tab" data-bs-target="#products-panel" type="button">
+          📦 Productos
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="orders-tab" data-bs-toggle="tab" data-bs-target="#orders-panel" type="button">
+          📋 Órdenes
+        </button>
+      </li>
+    </ul>
+
+    <!-- Contenido de Tabs -->
+    <div class="tab-content">
+
+      <!-- Panel de Productos -->
+      <div class="tab-pane fade show active" id="products-panel" role="tabpanel">
+        <div class="row mb-4">
+          <div class="col-12 d-flex justify-content-between align-items-center">
+            <h4>Gestión de Productos</h4>
+            <button class="btn btn-success" id="new-product-btn">
+              ➕ Nuevo Producto
+            </button>
+          </div>
+        </div>
+
+        <!-- Tabla de productos -->
+        <div class="table-responsive">
+          <table class="table table-hover" id="products-table">
+            <thead class="table-light">
+              <tr>
+                <th>Nombre</th>
+                <th>Categoría</th>
+                <th>Precio</th>
+                <th>Stock</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="products-tbody">
+              <!-- Filas de productos se renderizarán aquí -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Modal para crear/editar producto -->
+        <div class="modal fade" id="productModal" tabindex="-1">
+          <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="productModalTitle">Nuevo Producto</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+              </div>
+              <div class="modal-body">
+                <form id="product-form">
+                  <div class="mb-3">
+                    <label class="form-label">Nombre *</label>
+                    <input type="text" class="form-control" id="product-name" required>
+                  </div>
+
+                  <div class="mb-3">
+                    <label class="form-label">Descripción *</label>
+                    <textarea class="form-control" id="product-description" rows="3" required></textarea>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-md-6 mb-3">
+                      <label class="form-label">Precio (ARS) *</label>
+                      <input type="number" class="form-control" id="product-price" step="0.01" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                      <label class="form-label">Stock *</label>
+                      <input type="number" class="form-control" id="product-stock" required>
+                    </div>
+                  </div>
+
+                  <div class="mb-3">
+                    <label class="form-label">Categoría *</label>
+                    <select class="form-select" id="product-category" required>
+                      <option value="">Seleccionar categoría</option>
+                    </select>
+                  </div>
+
+                  <div class="mb-3">
+                    <label class="form-label">URL de imagen</label>
+                    <input type="url" class="form-control" id="product-image">
+                  </div>
+
+                  <div class="mb-3">
+                    <label class="form-label">Colores (JSON, opcional)</label>
+                    <input type="text" class="form-control" id="product-colors" placeholder='["rojo", "azul"]'>
+                  </div>
+
+                  <div class="mb-3">
+                    <label class="form-label">Tallas (JSON, opcional)</label>
+                    <input type="text" class="form-control" id="product-sizes" placeholder='["XS", "S", "M", "L"]'>
+                  </div>
+                </form>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="save-product-btn">Guardar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Panel de Órdenes -->
+      <div class="tab-pane fade" id="orders-panel" role="tabpanel">
+        <h4 class="mb-4">Gestión de Órdenes</h4>
+
+        <!-- Tabla de órdenes -->
+        <div class="table-responsive">
+          <table class="table table-hover" id="orders-table">
+            <thead class="table-light">
+              <tr>
+                <th>Orden</th>
+                <th>Cliente</th>
+                <th>Total</th>
+                <th>Método</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="orders-tbody">
+              <!-- Filas de órdenes se renderizarán aquí -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Modal para editar estado de orden -->
+        <div class="modal fade" id="orderModal" tabindex="-1">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Actualizar Orden</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+              </div>
+              <div class="modal-body">
+                <div class="mb-3">
+                  <p><strong>Orden:</strong> <span id="order-id"></span></p>
+                  <p><strong>Cliente:</strong> <span id="order-client"></span></p>
+                  <p><strong>Total:</strong> <span id="order-total"></span></p>
+                </div>
+
+                <div class="mb-3">
+                  <label class="form-label">Estado *</label>
+                  <select class="form-select" id="order-status">
+                    <option value="pendiente">⏳ Pendiente</option>
+                    <option value="pagado">✅ Pagado</option>
+                    <option value="enviado">📦 Enviado</option>
+                    <option value="entregado">🎁 Entregado</option>
+                    <option value="cancelado">❌ Cancelado</option>
+                  </select>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="update-order-btn">Actualizar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</main>

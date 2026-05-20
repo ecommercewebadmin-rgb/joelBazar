@@ -1,24 +1,65 @@
-/* Tablet (576px+) */
-@media (min-width: 576px) {
-  /* Ajustes para tablet */
-}
-
-/* Medium devices (768px+) */
-@media (min-width: 768px) {
-  /* Ajustes para tablet landscape */
-}
-
-/* Large devices (992px+) */
-@media (min-width: 992px) {
-  /* Ajustes para desktop */
-}
-
-/* Extra large devices (1200px+) */
-@media (min-width: 1200px) {
-  /* Ajustes para desktop grande */
-}
-
-/* Mobile only (< 576px) */
+/* Mobile - Extra pequeño (<576px) */
 @media (max-width: 575.98px) {
-  /* Ajustes para móvil */
+  .navbar-brand {
+    font-size: 1.1rem;
+  }
+
+  #cartOffcanvas {
+    width: 100vw !important;
+  }
+
+  .table {
+    font-size: 0.85rem;
+  }
+
+  .card {
+    margin-bottom: 1rem;
+  }
+
+  main {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+}
+
+/* Tablet - Pequeño (576px+) */
+@media (min-width: 576px) {
+  .navbar-brand {
+    font-size: 1.25rem;
+  }
+
+  .offcanvas {
+    width: 380px !important;
+  }
+}
+
+/* Tablet landscape - Medio (768px+) */
+@media (min-width: 768px) {
+  .container {
+    max-width: 720px;
+  }
+}
+
+/* Desktop - Grande (992px+) */
+@media (min-width: 992px) {
+  .container {
+    max-width: 960px;
+  }
+
+  #app {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+  main {
+    flex: 1;
+  }
+}
+
+/* Desktop grande (1200px+) */
+@media (min-width: 1200px) {
+  .container {
+    max-width: 1140px;
+  }
 }

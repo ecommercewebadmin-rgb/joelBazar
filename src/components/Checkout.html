@@ -1,0 +1,133 @@
+<main id="checkout-view" class="py-4">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-12 col-md-8 col-lg-6">
+
+        <!-- Progreso -->
+        <div class="mb-4">
+          <h4 class="mb-3">Tu Compra</h4>
+          <div class="progress" style="height: 4px;">
+            <div class="progress-bar" style="width: 33%"></div>
+          </div>
+        </div>
+
+        <!-- Formulario de datos del cliente -->
+        <form id="customer-form" class="mb-5">
+          <h5 class="mb-3">Información de entrega</h5>
+          
+          <div class="mb-3">
+            <label class="form-label">Nombre completo *</label>
+            <input 
+              type="text" 
+              class="form-control" 
+              id="customer-name"
+              placeholder="Tu nombre"
+              required>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Email *</label>
+            <input 
+              type="email" 
+              class="form-control" 
+              id="customer-email"
+              placeholder="tu@email.com"
+              required>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Teléfono *</label>
+            <input 
+              type="tel" 
+              class="form-control" 
+              id="customer-phone"
+              placeholder="+54 9 1234 5678"
+              required>
+          </div>
+
+          <div class="mb-4">
+            <label class="form-label">Dirección *</label>
+            <input 
+              type="text" 
+              class="form-control" 
+              id="customer-address"
+              placeholder="Calle, número, piso, dpto."
+              required>
+          </div>
+
+          <!-- Resumen de carrito -->
+          <div class="card mb-4 bg-light">
+            <div class="card-body">
+              <h6 class="mb-3">Resumen de compra</h6>
+              <div id="checkout-summary">
+                <!-- Items se renderizarán aquí -->
+              </div>
+              <hr class="my-3">
+              <div class="d-flex justify-content-between">
+                <strong>Total:</strong>
+                <strong class="text-success" id="checkout-total">$0</strong>
+              </div>
+            </div>
+          </div>
+
+          <!-- Método de pago -->
+          <h5 class="mb-3">Método de pago</h5>
+
+          <!-- MercadoPago -->
+          <div class="form-check mb-3">
+            <input 
+              class="form-check-input" 
+              type="radio" 
+              name="payment-method" 
+              id="payment-mercadopago"
+              value="mercadopago">
+            <label class="form-check-label w-100 p-2 border rounded" for="payment-mercadopago">
+              <strong>💳 MercadoPago</strong>
+              <p class="text-muted small mb-0">Tarjeta débito/crédito, dinero en cuenta, etc.</p>
+            </label>
+          </div>
+
+          <!-- Transferencia BBVA -->
+          <div class="form-check mb-3">
+            <input 
+              class="form-check-input" 
+              type="radio" 
+              name="payment-method" 
+              id="payment-bbva"
+              value="transferencia_bbva">
+            <label class="form-check-label w-100 p-2 border rounded" for="payment-bbva">
+              <strong>🏦 Transferencia Bancaria BBVA</strong>
+              <p class="text-muted small mb-0">Recibe los datos después de confirmar</p>
+            </label>
+          </div>
+
+          <!-- Transferencia Galicia -->
+          <div class="form-check mb-4">
+            <input 
+              class="form-check-input" 
+              type="radio" 
+              name="payment-method" 
+              id="payment-galicia"
+              value="transferencia_galicia">
+            <label class="form-check-label w-100 p-2 border rounded" for="payment-galicia">
+              <strong>🏦 Transferencia Bancaria Galicia</strong>
+              <p class="text-muted small mb-0">Recibe los datos después de confirmar</p>
+            </label>
+          </div>
+
+          <!-- Botones -->
+          <div class="d-grid gap-2">
+            <button type="submit" class="btn btn-primary btn-lg" id="confirm-payment-btn">
+              Confirmar pago
+            </button>
+            <button type="button" class="btn btn-outline-secondary" id="back-to-cart-btn">
+              Volver al carrito
+            </button>
+          </div>
+
+        </form>
+
+      </div>
+    </div>
+  </div>
+</main>
