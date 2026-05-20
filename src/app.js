@@ -1,5 +1,6 @@
 import { templates } from './components/templates.js';
 import { getHomeController } from './pages/homeController.js';
+import { getDetailController } from './pages/detailController.js';
 
 export class App {
   constructor() {
@@ -10,6 +11,11 @@ export class App {
   init() {
     this.renderLayout();
     
+    // Escuchar cambios de hash en la URL (navegación manual o via JS)
+    window.addEventListener('hashchange', () => {
+      this.navigate(window.location.hash);
+    });
+
     document.addEventListener('click', (e) => {
       const link = e.target.closest('a[href^="#/"]');
       if (link) {
@@ -19,8 +25,9 @@ export class App {
       }
     });
 
-    this.navigate('#/home');
+    this.navigate(window.location.hash || '#/home');
   }
+
 
   renderLayout() {
     const root = document.getElementById('root');
@@ -34,9 +41,22 @@ export class App {
   }
 
   navigate(route) {
-    const view = route.replace('#/', '').split('?')[0] || 'home';
-    this.showView(`${view}-view`);
+    let view = route.replace('#/', '').split('?')[0] || 'home';
+    
+    // Mapeo de rutas a IDs de vista
+    const viewMapping = {
+      'home': 'home-view',
+      'detalle': 'product-detail-view',
+      'checkout': 'checkout-view',
+      'confirmacion': 'payment-confirmation-view',
+      'login': 'admin-login-view',
+      'admin': 'admin-dashboard-view'
+    };
+
+    const viewId = viewMapping[view] || `${view}-view`;
+    this.showView(viewId);
   }
+
 
   showView(viewId) {
     const content = document.getElementById('app-content');
@@ -49,6 +69,8 @@ export class App {
       
       if (viewId === 'home-view') {
         getHomeController().init();
+      } else if (viewId === 'product-detail-view') {
+        getDetailController().init();
       }
     }
   }

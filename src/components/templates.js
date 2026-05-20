@@ -115,39 +115,8 @@ export const templates = {
     <main id="product-detail-view" class="py-4">
       <div class="container">
         <button class="btn btn-link px-0 mb-4" id="back-btn">← Volver al catálogo</button>
-        <div class="row g-4">
-          <div class="col-12 col-md-6">
-            <div class="card border-0">
-              <img id="detail-image" src="" class="card-img-top object-fit-contain bg-light p-3" alt="" style="height: 400px; object-fit: contain;">
-            </div>
-          </div>
-          <div class="col-12 col-md-6">
-            <h1 id="detail-name" class="mb-3"></h1>
-            <div class="mb-3"><span class="badge bg-secondary" id="detail-category"></span></div>
-            <div class="mb-4"><span class="fs-3 fw-bold text-success" id="detail-price">$0</span></div>
-            <div class="mb-4 p-3 bg-light rounded"><strong id="stock-status">Stock disponible: 10</strong></div>
-            <div class="mb-4"><h6>Descripción</h6><p id="detail-description" class="text-muted"></p></div>
-            <div class="mb-4" id="colors-section" style="display: none;">
-              <label class="form-label"><strong>Color</strong></label>
-              <div class="d-flex gap-2" id="colors-list"></div>
-            </div>
-            <div class="mb-4" id="sizes-section" style="display: none;">
-              <label class="form-label"><strong>Talla</strong></label>
-              <div class="d-flex gap-2 flex-wrap" id="sizes-list"></div>
-            </div>
-            <div class="mb-4">
-              <label class="form-label"><strong>Cantidad</strong></label>
-              <div class="input-group" style="width: fit-content;">
-                <button class="btn btn-outline-secondary" id="qty-decrease">−</button>
-                <input type="number" class="form-control text-center" id="qty-input" value="1" min="1" style="width: 60px;">
-                <button class="btn btn-outline-secondary" id="qty-increase">+</button>
-              </div>
-            </div>
-            <div class="d-grid gap-2 d-md-flex">
-              <button class="btn btn-success btn-lg flex-grow-1" id="add-to-cart-btn">Agregar al carrito</button>
-              <button class="btn btn-outline-primary btn-lg" id="buy-now-btn">Comprar ahora</button>
-            </div>
-          </div>
+        <div id="detail-content">
+          <!-- El contenido se cargará dinámicamente aquí -->
         </div>
       </div>
     </main>
