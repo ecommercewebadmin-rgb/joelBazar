@@ -19,11 +19,17 @@ class AuthService {
   }
 
   validateCredentials(username, password) {
-    const expectedUsername = import.meta.env.VITE_ADMIN_USERNAME;
-    const expectedPassword = import.meta.env.VITE_ADMIN_PASSWORD;
+    const expectedUsername = import.meta.env.VITE_ADMIN_USERNAME?.trim();
+    const expectedPassword = import.meta.env.VITE_ADMIN_PASSWORD?.trim();
 
-    return username === expectedUsername && password === expectedPassword;
+    if (!expectedUsername || !expectedPassword) {
+      throw new Error('El servidor no tiene configuradas las credenciales de admin (.env)');
+    }
+
+    return username.trim() === expectedUsername && password.trim() === expectedPassword;
   }
+
+
 
   login(username, password) {
     if (!this.validateCredentials(username, password)) {

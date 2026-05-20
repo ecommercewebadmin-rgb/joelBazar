@@ -341,7 +341,7 @@ export const templates = {
                   </div>
                   <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary" id="update-order-btn">Actualizar</button>
+                    <button type="button" class="btn btn-primary btn-update-order" id="update-order-btn">Actualizar</button>
                   </div>
                 </div>
               </div>
