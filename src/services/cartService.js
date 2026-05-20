@@ -1,3 +1,5 @@
+import { airtableService } from './airtableService.js';
+
 class CartService {
   constructor() {
     this.storageKey = 'cart_items';
@@ -22,6 +24,13 @@ class CartService {
     const cart = this.getCart();
     const itemKey = this.generateItemKey(product.id, selectedColor, selectedSize);
 
+    const existingItem = cart.find(item => item.itemKey === itemKey);
+    const currentQuantity = existingItem ? existingItem.quantity : 0;
+
+    if (currentQuantity + quantity > product.stock) {
+      throw new Error(`Stock insuficiente. Solo hay ${product.stock} unidades disponibles.`);
+    }
+
     const existingIndex = cart.findIndex(item => item.itemKey === itemKey);
 
     if (existingIndex >= 0) {
@@ -31,7 +40,7 @@ class CartService {
         itemKey,
         id: product.id,
         nombre: product.nombre,
-        precio: product.precio,
+        precio: Number(product.precio) || 0,
         imagen_url: product.imagen_url,
         quantity,
         selectedColor,
@@ -43,7 +52,7 @@ class CartService {
     return cart;
   }
 
-  updateQuantity(itemKey, quantity) {
+  async updateQuantity(itemKey, quantity) {
     if (quantity < 0) {
       return this.removeFromCart(itemKey);
     }
@@ -52,6 +61,10 @@ class CartService {
     const item = cart.find(i => i.itemKey === itemKey);
 
     if (item) {
+      const product = await airtableService.getRecord('Productos', item.id);
+      if (quantity > product.stock) {
+        throw new Error(`Stock insuficiente. Solo quedan ${product.stock} unidades.`);
+      }
       item.quantity = Math.min(quantity, this.maxQuantityPerProduct);
       this.saveCart(cart);
     }

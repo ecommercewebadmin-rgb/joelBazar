@@ -1,5 +1,7 @@
 import { cartService } from '../services/cartService.js';
 import { orderService } from '../services/orderService.js';
+import { airtableService } from '../services/airtableService.js';
+import { confirmationModal } from '../components/ConfirmationModal.js';
 
 export class CheckoutController {
   constructor() {
@@ -58,7 +60,7 @@ export class CheckoutController {
     if (this.totalDiv) this.totalDiv.textContent = `$${total.toLocaleString('es-AR')}`;
   }
 
-  validateForm() {
+  async validateForm() {
     const email = this.emailInput?.value || '';
     const phone = this.phoneInput?.value || '';
     const address = this.addressInput?.value || '';
@@ -67,27 +69,27 @@ export class CheckoutController {
     const phoneRegex = /^[0-9]{7,15}$/;
 
     if (!this.nameInput?.value) {
-      alert('Por favor ingresa tu nombre');
+      await confirmationModal.alert('Atención', 'Por favor ingresa tu nombre');
       return false;
     }
 
     if (!emailRegex.test(email)) {
-      alert('Por favor ingresa un email válido');
+      await confirmationModal.alert('Atención', 'Por favor ingresa un email válido');
       return false;
     }
 
     if (!phoneRegex.test(phone)) {
-      alert('Por favor ingresa un teléfono válido (7-15 dígitos)');
+      await confirmationModal.alert('Atención', 'Por favor ingresa un teléfono válido (7-15 dígitos)');
       return false;
     }
 
     if (address.length < 10) {
-      alert('Por favor ingresa una dirección válida (mínimo 10 caracteres)');
+      await confirmationModal.alert('Atención', 'Por favor ingresa una dirección válida (mínimo 10 caracteres)');
       return false;
     }
 
     if (!this.selectedPaymentMethod) {
-      alert('Por favor selecciona un método de pago');
+      await confirmationModal.alert('Método de Pago', 'Por favor selecciona un método de pago');
       return false;
     }
 
@@ -97,7 +99,7 @@ export class CheckoutController {
   async handleSubmit(e) {
     e.preventDefault();
 
-    if (!this.validateForm()) return;
+    if (!(await this.validateForm())) return;
 
     try {
       const customerData = {
@@ -108,6 +110,17 @@ export class CheckoutController {
       };
 
       const cartItems = cartService.getCheckoutData();
+
+      // Validar stock de todos los productos obteniendo la lista completa una sola vez
+      const allProducts = await airtableService.getProducts();
+      for (const item of cartItems) {
+        const product = allProducts.find(p => p.id === item.product_id);
+        if (!product || item.cantidad > product.stock) {
+          const stockMsg = product ? `Disponible: ${product.stock}` : 'Producto no encontrado';
+          await confirmationModal.alert('Stock insuficiente', `Stock insuficiente para ${item.nombre}. ${stockMsg}`);
+          throw new Error('Stock insuficiente');
+        }
+      }
 
       const order = await orderService.createOrder(
         customerData,
@@ -123,7 +136,10 @@ export class CheckoutController {
         window.location.hash = `#/confirmacion?orderId=${order.id}&method=transfer`;
       }
     } catch (error) {
-      alert('Error procesando el pedido');
+      console.error('Checkout Error:', error);
+      if (error.message !== 'Stock insuficiente') {
+        await confirmationModal.alert('Error', 'Error procesando el pedido. Por favor, intenta nuevamente.');
+      }
     }
   }
 }

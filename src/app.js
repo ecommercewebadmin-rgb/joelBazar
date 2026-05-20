@@ -2,6 +2,7 @@ import { templates } from './components/templates.js';
 import { getHomeController } from './pages/homeController.js';
 import { getDetailController } from './pages/detailController.js';
 import { getCheckoutController } from './pages/checkoutController.js';
+import { getPaymentConfirmationController } from './pages/PaymentConfirmationController.js';
 import { getAdminLoginController } from './pages/adminLoginController.js';
 import { getAdminProductsController } from './pages/adminProductsController.js';
 import { getAdminOrdersController } from './pages/adminOrdersController.js';
@@ -85,10 +86,12 @@ export class App {
         getHomeController().init();
       } else if (viewId === 'product-detail-view') {
         getDetailController().init();
-      } else if (viewId === 'checkout-view') {
-        getCheckoutController().init();
-      } else if (viewId === 'admin-login-view') {
-        getAdminLoginController().init();
+       } else if (viewId === 'checkout-view') {
+         getCheckoutController().init();
+       } else if (viewId === 'payment-confirmation-view') {
+         getPaymentConfirmationController().init();
+       } else if (viewId === 'admin-login-view') {
+         getAdminLoginController().init();
       } else if (viewId === 'admin-dashboard-view') {
         getAdminProductsController().init();
         getAdminOrdersController().init();

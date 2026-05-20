@@ -1,5 +1,6 @@
 import { airtableService } from '../services/airtableService.js';
 import { cartService } from '../services/cartService.js';
+import { confirmationModal } from '../components/ConfirmationModal.js';
 import { Skeleton } from '../components/SkeletonLoader.js';
 
 export class DetailController {
@@ -36,6 +37,11 @@ export class DetailController {
         this.content.innerHTML = '<div class="text-center py-5"><p class="text-danger">Producto no encontrado</p></div>';
         return;
       }
+
+      // Resetear selecciones al cargar un nuevo producto
+      this.selectedColor = null;
+      this.selectedSize = null;
+      this.quantity = 1;
 
       Skeleton.renderProductDetail(this.content);
 
@@ -141,9 +147,11 @@ export class DetailController {
     });
 
     if (qtyIncrease) qtyIncrease.addEventListener('click', () => {
-      if (this.quantity < 999) {
+      if (this.quantity < this.product.stock) {
         this.quantity++;
         qtyInput.value = this.quantity;
+      } else {
+        confirmationModal.alert('Stock agotado', 'No hay más unidades disponibles de este producto.');
       }
     });
 
@@ -172,7 +180,7 @@ export class DetailController {
       try {
         const colors = JSON.parse(this.product.colores);
         if (colors.length > 0 && !this.selectedColor) {
-          alert('Por favor selecciona un color');
+          confirmationModal.alert('Selección requerida', 'Por favor, selecciona un color antes de agregar al carrito.');
           return false;
         }
       } catch (e) {}
@@ -181,7 +189,7 @@ export class DetailController {
       try {
         const sizes = JSON.parse(this.product.tallas);
         if (sizes.length > 0 && !this.selectedSize) {
-          alert('Por favor selecciona una talla');
+          confirmationModal.alert('Selección requerida', 'Por favor, selecciona una talla antes de agregar al carrito.');
           return false;
         }
       } catch (e) {}
@@ -194,14 +202,14 @@ export class DetailController {
 
     try {
       cartService.addToCart(this.product, this.quantity, this.selectedColor, this.selectedSize);
-      alert(`${this.product.nombre} agregado al carrito`);
+      confirmationModal.alert('¡Agregado!', `${this.product.nombre} ha sido agregado al carrito correctamente.`);
       const cartBtn = document.querySelector('[data-bs-target="#cartOffcanvas"]');
       if (cartBtn) cartBtn.click();
       this.quantity = 1;
       const qtyInput = document.getElementById('qty-input');
       if (qtyInput) qtyInput.value = 1;
     } catch (error) {
-      alert('Error agregando al carrito');
+      confirmationModal.alert('Error', error.message || 'Hubo un problema al agregar el producto al carrito.');
     }
   }
 

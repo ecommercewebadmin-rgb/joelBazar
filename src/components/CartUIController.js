@@ -1,4 +1,5 @@
 import { cartService } from '../services/cartService.js';
+import { confirmationModal } from './ConfirmationModal.js';
 
 export class CartUIController {
   constructor() {
@@ -22,8 +23,9 @@ export class CartUIController {
   setupEventListeners() {
     window.addEventListener('cartChanged', () => this.render());
 
-    this.clearBtn?.addEventListener('click', () => {
-      if (confirm('¿Vaciar carrito?')) {
+    this.clearBtn?.addEventListener('click', async () => {
+      const confirmed = await confirmationModal.confirm('Vaciar Carrito', '¿Estás seguro de que deseas eliminar todos los productos del carrito?');
+      if (confirmed) {
         cartService.clearCart();
         this.render();
       }
@@ -32,6 +34,9 @@ export class CartUIController {
     this.checkoutBtn?.addEventListener('click', () => {
       const cart = cartService.getCart();
       if (cart.length > 0) {
+        const cartOffcanvas = document.getElementById('cartOffcanvas');
+        const offcanvasInstance = bootstrap.Offcanvas.getInstance(cartOffcanvas);
+        if (offcanvasInstance) offcanvasInstance.hide();
         window.location.hash = '#/checkout';
       }
     });
@@ -85,23 +90,31 @@ export class CartUIController {
     this.itemsContainer.innerHTML = html;
 
     document.querySelectorAll('.qty-decrease').forEach(btn => {
-      btn.addEventListener('click', e => {
+      btn.addEventListener('click', async e => {
         const itemKey = e.target.dataset.itemKey;
         const cartItems = cartService.getCart();
         const item = cartItems.find(i => i.itemKey === itemKey);
         if (item && item.quantity > 1) {
-          cartService.updateQuantity(itemKey, item.quantity - 1);
+          try {
+            await cartService.updateQuantity(itemKey, item.quantity - 1);
+          } catch (error) {
+            alert(error.message);
+          }
         }
       });
     });
 
     document.querySelectorAll('.qty-increase').forEach(btn => {
-      btn.addEventListener('click', e => {
+      btn.addEventListener('click', async e => {
         const itemKey = e.target.dataset.itemKey;
         const cartItems = cartService.getCart();
         const item = cartItems.find(i => i.itemKey === itemKey);
         if (item) {
-          cartService.updateQuantity(itemKey, item.quantity + 1);
+          try {
+            await cartService.updateQuantity(itemKey, item.quantity + 1);
+          } catch (error) {
+            alert(error.message);
+          }
         }
       });
     });

@@ -67,8 +67,13 @@ class AirtableService {
   }
 
   async deleteRecord(tableName, recordId) {
-    await this.request('DELETE', tableName, null, recordId);
-    return true;
+    try {
+      await this.request('DELETE', tableName, null, recordId);
+      return true;
+    } catch (error) {
+      console.error(`Error deleting record ${recordId} from ${tableName}:`, error);
+      throw error;
+    }
   }
 
   async getProducts() {

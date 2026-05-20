@@ -1,4 +1,5 @@
 import { airtableService } from '../services/airtableService.js';
+import { confirmationModal } from '../components/ConfirmationModal.js';
 
 export class AdminProductsController {
   constructor() {
@@ -25,9 +26,11 @@ export class AdminProductsController {
 
       if (e.target.classList.contains('btn-delete')) {
         const productId = e.target.dataset.productId;
-        if (confirm('¿Eliminar este producto?')) {
-          this.deleteProduct(productId);
-        }
+        confirmationModal.confirm('Eliminar Producto', '¿Estás seguro de que deseas eliminar este producto? Esta acción no se puede deshacer.', { danger: true }).then(confirmed => {
+          if (confirmed) {
+            this.deleteProduct(productId);
+          }
+        });
       }
     });
 
@@ -55,18 +58,24 @@ export class AdminProductsController {
     if (!tbody) return;
     tbody.innerHTML = this.products
       .map(
-        p => `
-      <tr>
-        <td>${p.nombre}</td>
-        <td>${p.categoria_id || '-'}</td>
-        <td>$${p.precio}</td>
-        <td>${p.stock}</td>
-        <td>
-          <button class="btn btn-sm btn-primary btn-edit" data-product-id="${p.id}">Editar</button>
-          <button class="btn btn-sm btn-danger btn-delete" data-product-id="${p.id}">Eliminar</button>
-        </td>
-      </tr>
-    `
+        p => {
+          const catId = Array.isArray(p.categoria_id) ? p.categoria_id[0] : p.categoria_id;
+          const category = this.categories.find(c => c.id === catId);
+          const categoryName = category ? category.nombre : (catId || '-');
+          
+          return `
+          <tr>
+            <td>${p.nombre}</td>
+            <td>${categoryName}</td>
+            <td>$${p.precio}</td>
+            <td>${p.stock}</td>
+            <td>
+              <button class="btn btn-sm btn-primary btn-edit" data-product-id="${p.id}">Editar</button>
+              <button class="btn btn-sm btn-danger btn-delete" data-product-id="${p.id}">Eliminar</button>
+            </td>
+          </tr>
+        `;
+        }
       )
       .join('');
   }
@@ -87,7 +96,10 @@ export class AdminProductsController {
       document.getElementById('product-description').value = product.descripcion;
       document.getElementById('product-price').value = product.precio;
       document.getElementById('product-stock').value = product.stock;
-      categorySelect.value = product.categoria_id;
+      
+      const catId = Array.isArray(product.categoria_id) ? product.categoria_id[0] : product.categoria_id;
+      categorySelect.value = catId || '';
+      
       document.getElementById('product-image').value = product.imagen_url;
       document.getElementById('product-colors').value = product.colores || '';
       document.getElementById('product-sizes').value = product.tallas || '';
@@ -103,6 +115,11 @@ export class AdminProductsController {
 
   async saveProduct() {
     const form = document.getElementById('product-form');
+    if (!form.checkValidity()) {
+      form.reportValidity();
+      return;
+    }
+
     const productId = form.dataset.productId;
     const data = {
       nombre: document.getElementById('product-name').value,
@@ -125,7 +142,7 @@ export class AdminProductsController {
       bootstrap.Modal.getInstance(document.getElementById('productModal')).hide();
       this.loadInitialData();
     } catch (error) {
-      alert('Error guardando producto');
+      confirmationModal.alert('Error', 'Hubo un problema al guardar el producto. Por favor, verifica los datos e intenta nuevamente.');
     }
   }
 
@@ -134,7 +151,7 @@ export class AdminProductsController {
       await airtableService.deleteProduct(productId);
       this.loadInitialData();
     } catch (error) {
-      alert('Error eliminando producto');
+      confirmationModal.alert('Error', 'No se pudo eliminar el producto.');
     }
   }
 }

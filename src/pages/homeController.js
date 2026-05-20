@@ -1,4 +1,6 @@
 import { airtableService } from '../services/airtableService.js';
+import { cartService } from '../services/cartService.js';
+import { confirmationModal } from '../components/ConfirmationModal.js';
 import { Skeleton } from '../components/SkeletonLoader.js';
 import { debounce } from '../utils/helpers.js';
 
@@ -190,9 +192,11 @@ export class HomeController {
   handleAddToCart(productId) {
     const product = this.products.find(p => p.id === productId);
     if (!product || product.stock <= 0) {
-      alert('Producto no disponible');
+      confirmationModal.alert('No disponible', 'Este producto ya no tiene stock disponible.');
       return;
     }
+    cartService.addToCart(product);
+    confirmationModal.alert('¡Agregado!', `${product.nombre} ha sido agregado al carrito correctamente.`);
   }
 }
 
