@@ -1,6 +1,7 @@
 import { templates } from './components/templates.js';
 import { getHomeController } from './pages/homeController.js';
 import { getDetailController } from './pages/detailController.js';
+import { getCheckoutController } from './pages/checkoutController.js';
 
 export class App {
   constructor() {
@@ -11,7 +12,6 @@ export class App {
   init() {
     this.renderLayout();
     
-    // Escuchar cambios de hash en la URL (navegación manual o via JS)
     window.addEventListener('hashchange', () => {
       this.navigate(window.location.hash);
     });
@@ -28,7 +28,6 @@ export class App {
     this.navigate(window.location.hash || '#/home');
   }
 
-
   renderLayout() {
     const root = document.getElementById('root');
     if (!root) return;
@@ -43,7 +42,6 @@ export class App {
   navigate(route) {
     let view = route.replace('#/', '').split('?')[0] || 'home';
     
-    // Mapeo de rutas a IDs de vista
     const viewMapping = {
       'home': 'home-view',
       'detalle': 'product-detail-view',
@@ -56,7 +54,6 @@ export class App {
     const viewId = viewMapping[view] || `${view}-view`;
     this.showView(viewId);
   }
-
 
   showView(viewId) {
     const content = document.getElementById('app-content');
@@ -71,6 +68,8 @@ export class App {
         getHomeController().init();
       } else if (viewId === 'product-detail-view') {
         getDetailController().init();
+      } else if (viewId === 'checkout-view') {
+        getCheckoutController().init();
       }
     }
   }

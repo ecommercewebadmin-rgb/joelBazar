@@ -25,8 +25,8 @@ class OrderService {
         ),
         metodo_pago: paymentMethod,
         estado: 'pendiente',
-        creado_en: new Date().toISOString(),
       };
+
 
       const order = await airtableService.createOrder(orderData);
       return order;
