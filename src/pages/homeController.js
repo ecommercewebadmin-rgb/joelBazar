@@ -113,17 +113,30 @@ export class HomeController {
 
   applyFilters() {
     this.filteredProducts = this.products.filter(product => {
-      const matchCategory =
-        !this.activeCategory || product.categoria_id === this.activeCategory;
+      let matchCategory = !this.activeCategory;
+
+      if (this.activeCategory) {
+        const productCat = product.categoria_id;
+        const activeCatObj = this.categories.find(c => c.id === this.activeCategory);
+        const activeCatName = activeCatObj ? activeCatObj.nombre : null;
+
+        if (Array.isArray(productCat)) {
+          matchCategory = productCat.includes(this.activeCategory) || 
+                         productCat.some(id => id === activeCatName);
+        } else if (typeof productCat === 'string') {
+          matchCategory = (productCat === this.activeCategory || productCat === activeCatName);
+        }
+      }
 
       const matchSearch =
         !this.searchTerm ||
-        product.nombre.toLowerCase().includes(this.searchTerm) ||
-        (product.descripcion &&
-          product.descripcion.toLowerCase().includes(this.searchTerm));
+        (product.nombre && product.nombre.toLowerCase().includes(this.searchTerm)) ||
+        (product.descripcion && product.descripcion.toLowerCase().includes(this.searchTerm));
 
       return matchCategory && matchSearch;
     });
+
+
 
     this.renderProducts();
   }
@@ -157,11 +170,12 @@ export class HomeController {
                       data-product-id="${product.id}">
                 Ver
               </button>
-              <button class="btn btn-success btn-sm btn-add-to-cart" 
+               <button class="btn btn-success btn-sm btn-add-to-cart" 
                       data-product-id="${product.id}"
                       ${product.stock <= 0 ? 'disabled' : ''}>
-                Agregar
-              </button>
+                 ${product.stock <= 0 ? 'Agotado' : 'Agregar'}
+               </button>
+
             </div>
           </div>
         </div>
