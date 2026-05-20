@@ -1,14 +1,23 @@
-// Helpers generales del proyecto
+import { CONFIG } from './constants.js';
+
+// Formatear moneda
 export function formatCurrency(amount) {
-  // Se implementará cuando se necesite
-  return amount;
+  return new Intl.NumberFormat('es-AR', {
+    style: 'currency',
+    currency: CONFIG.CURRENCY,
+  }).format(amount);
 }
 
+// Formatear fecha
 export function formatDate(date) {
-  // Se implementará cuando se necesite
-  return date;
+  return new Intl.DateTimeFormat('es-AR', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+  }).format(new Date(date));
 }
 
+// Debounce para búsqueda
 export function debounce(func, delay) {
   let timeoutId;
   return function(...args) {
@@ -17,6 +26,7 @@ export function debounce(func, delay) {
   };
 }
 
+// Throttle para scroll
 export function throttle(func, delay) {
   let lastCall = 0;
   return function(...args) {
@@ -26,4 +36,28 @@ export function throttle(func, delay) {
       func.apply(this, args);
     }
   };
+}
+
+// Mostrar toast/notificación
+export function showNotification(message, type = 'info', duration = 3000) {
+  const event = new CustomEvent('showNotification', {
+    detail: { message, type, duration },
+  });
+  window.dispatchEvent(event);
+}
+
+// Copiar al portapapeles
+export async function copyToClipboard(text) {
+  try {
+    await navigator.clipboard.writeText(text);
+    showNotification('Copiado al portapapeles', 'success', 2000);
+  } catch {
+    showNotification('Error al copiar', 'error');
+  }
+}
+
+// Obtener valor de query parameter
+export function getQueryParam(param) {
+  const params = new URLSearchParams(window.location.search);
+  return params.get(param);
 }
