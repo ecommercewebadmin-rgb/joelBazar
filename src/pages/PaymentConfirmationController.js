@@ -1,4 +1,6 @@
 import { airtableService } from '../services/airtableService.js';
+import { Toast } from '../components/Toast.js';
+import { Skeleton } from '../components/SkeletonLoader.js';
 
 export class PaymentConfirmationController {
   constructor() {
@@ -9,6 +11,18 @@ export class PaymentConfirmationController {
   async init() {
     this.setupElements();
     this.setupEventListeners();
+    
+    // Mostrar skeleton mientras se cargan los datos
+    if (this.confirmationSummaryEl) {
+      this.confirmationSummaryEl.innerHTML = `
+        <div class="d-flex flex-column gap-2">
+          <div class="skeleton skeleton-text" style="width: 100%;"></div>
+          <div class="skeleton skeleton-text" style="width: 100%;"></div>
+          <div class="skeleton skeleton-text" style="width: 100%;"></div>
+        </div>
+      `;
+    }
+
     await this.loadOrderData();
     this.renderConfirmation();
   }
@@ -33,11 +47,11 @@ export class PaymentConfirmationController {
     });
 
     document.getElementById('copy-account-btn')?.addEventListener('click', () => {
-      this.copyToClipboard(this.bankAccountEl.value);
+      this.copyToClipboard(this.bankAccountEl.value, 'CBU');
     });
 
     document.getElementById('copy-alias-btn')?.addEventListener('click', () => {
-      this.copyToClipboard(this.bankAliasEl.value);
+      this.copyToClipboard(this.bankAliasEl.value, 'Alias');
     });
   }
 
@@ -98,9 +112,9 @@ export class PaymentConfirmationController {
     this.transferConceptEl.value = this.order.numero_orden;
   }
 
-  copyToClipboard(text) {
+  copyToClipboard(text, label) {
     navigator.clipboard.writeText(text).then(() => {
-      alert('Copiado al portapapeles');
+      Toast.show(`${label} copiado al portapapeles`, 'success');
     });
   }
 }

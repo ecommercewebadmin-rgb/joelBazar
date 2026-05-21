@@ -387,25 +387,29 @@ export const templates = {
                     <h5 class="modal-title fw-bold">Actualizar Orden</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                   </div>
-                  <div class="modal-body p-4">
-                    <div class="bg-light p-3 rounded mb-4">
-                      <div class="row g-2">
-                        <div class="col-6 text-muted small">ID Orden:</div><div class="col-6 fw-bold" id="order-id"></div>
-                        <div class="col-6 text-muted small">Cliente:</div><div class="col-6 fw-bold" id="order-client"></div>
-                        <div class="col-6 text-muted small">Total:</div><div class="col-6 fw-bold text-success" id="order-total"></div>
+                    <div class="modal-body p-4">
+                      <div class="bg-light p-3 rounded mb-4">
+                        <div class="row g-2">
+                          <div class="col-6 text-muted small">ID Orden:</div><div class="col-6 fw-bold" id="order-id"></div>
+                          <div class="col-6 text-muted small">Cliente:</div><div class="col-6 fw-bold" id="order-client"></div>
+                          <div class="col-6 text-muted small">Total:</div><div class="col-6 fw-bold text-success" id="order-total"></div>
+                        </div>
+                      </div>
+                      <div class="mb-4">
+                        <h6 class="fw-bold mb-3">Productos comprados:</h6>
+                        <div id="order-products" class="small"></div>
+                      </div>
+                      <div class="mb-3">
+                        <label class="form-label fw-semibold">Cambiar Estado de la Orden *</label>
+                        <select class="form-select form-select-lg" id="order-status">
+                          <option value="pendiente">⏳ Pendiente</option>
+                          <option value="pagado">✅ Pagado</option>
+                          <option value="enviado">📦 Enviado</option>
+                          <option value="entregado">🎁 Entregado</option>
+                          <option value="cancelado">❌ Cancelado</option>
+                        </select>
                       </div>
                     </div>
-                    <div class="mb-3">
-                      <label class="form-label fw-semibold">Cambiar Estado de la Orden *</label>
-                      <select class="form-select form-select-lg" id="order-status">
-                        <option value="pendiente">⏳ Pendiente</option>
-                        <option value="pagado">✅ Pagado</option>
-                        <option value="enviado">📦 Enviado</option>
-                        <option value="entregado">🎁 Entregado</option>
-                        <option value="cancelado">❌ Cancelado</option>
-                      </select>
-                    </div>
-                  </div>
                   <div class="modal-footer bg-light">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                     <button type="button" class="btn btn-primary fw-bold btn-update-order" id="update-order-btn">Actualizar Estado</button>

@@ -50,8 +50,10 @@ export class AdminOrdersController {
         <td>$${o.total}</td>
         <td>${this.translatePaymentMethod(o.metodo_pago)}</td>
         <td><span class="badge" style="background-color: ${this.getStatusColor(o.estado)}">${o.estado}</span></td>
-        <td>
-          <button class="btn btn-sm btn-info btn-view-order" data-order-id="${o.id}">Ver</button>
+        <td class="text-end">
+          <div class="d-flex justify-content-end gap-2">
+            <button class="btn btn-sm btn-outline-info btn-view-order" data-order-id="${o.id}">Ver</button>
+          </div>
         </td>
       </tr>
     `
@@ -67,23 +69,87 @@ export class AdminOrdersController {
     document.getElementById('order-total').textContent = `$${order.total}`;
     document.getElementById('order-status').value = order.estado;
     document.getElementById('update-order-btn').dataset.orderId = order.id;
+    
+    // Renderizar productos de la orden
+    const productsContainer = document.getElementById('order-products');
+    if (productsContainer && order.productos) {
+      try {
+        const products = typeof order.productos === 'string' 
+          ? JSON.parse(order.productos) 
+          : order.productos;
+          
+        productsContainer.innerHTML = products.map(p => `
+          <div class="border-bottom pb-2 mb-2">
+            <div class="d-flex justify-content-between">
+              <strong>${p.nombre}</strong>
+              <span>$${(p.cantidad * p.precio_unitario).toLocaleString('es-AR')}</span>
+            </div>
+            <div class="text-muted small">
+              ${p.cantidad} x $${p.precio_unitario.toLocaleString('es-AR')}
+              ${p.color ? ` | Color: ${p.color}` : ''}
+              ${p.talla ? ` | Talla: ${p.talla}` : ''}
+            </div>
+          </div>
+        `).join('');
+      } catch (e) {
+        productsContainer.innerHTML = '<p class="text-danger small">Error al cargar productos</p>';
+      }
+    }
+
     modal.show();
   }
 
   async updateOrderStatus() {
     const updateBtn = document.getElementById('update-order-btn');
+    if (!updateBtn) return;
+
     const orderId = updateBtn.dataset.orderId;
     const newStatus = document.getElementById('order-status').value;
 
     try {
       toggleLoading(updateBtn, true);
+      
+      // 1. Actualizar el estado de la orden
       await airtableService.updateRecord('Ordenes', orderId, {
         estado: newStatus,
       });
 
-      bootstrap.Modal.getInstance(document.getElementById('orderModal')).hide();
-      await this.loadOrders();
+      // 2. Si la orden se cancela, devolver el stock a los productos en PARALELO
+      if (newStatus === 'cancelado') {
+        const order = await airtableService.getRecord('Ordenes', orderId);
+        
+        if (order && order.productos) {
+          const products = typeof order.productos === 'string' 
+            ? JSON.parse(order.productos) 
+            : order.productos;
+            
+          // Usamos Promise.all para actualizar todos los stocks simultáneamente
+          // Esto evita que la pantalla se "congele" esperando cada petición secuencial
+          await Promise.all(products.map(async (product) => {
+            const productId = product.product_id || product.id;
+            if (productId) {
+              const currentProduct = await airtableService.getRecord('Productos', productId);
+              const currentStock = Number(currentProduct.stock || 0);
+              const quantityToReturn = Number(product.cantidad || 0);
+              await airtableService.updateRecord('Productos', productId, { 
+                stock: currentStock + quantityToReturn 
+              });
+            }
+          }));
+        }
+      }
+
+      // Cerrar modal inmediatamente después de las operaciones críticas
+      const modalElement = document.getElementById('orderModal');
+      const modalInstance = bootstrap.Modal.getInstance(modalElement);
+      if (modalInstance) {
+        modalInstance.hide();
+      }
+      
+      // Refrescar la tabla en segundo plano
+      this.loadOrders();
     } catch (error) {
+      console.error('Error updating order status:', error);
       alert('Error actualizando orden');
     } finally {
       toggleLoading(updateBtn, false);

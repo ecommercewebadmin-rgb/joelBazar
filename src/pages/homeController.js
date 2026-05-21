@@ -3,6 +3,7 @@ import { cartService } from '../services/cartService.js';
 import { confirmationModal } from '../components/ConfirmationModal.js';
 import { Skeleton } from '../components/SkeletonLoader.js';
 import { debounce } from '../utils/helpers.js';
+import { Toast } from '../components/Toast.js';
 
 export class HomeController {
   constructor() {
@@ -194,7 +195,7 @@ export class HomeController {
       return;
     }
     cartService.addToCart(product);
-    confirmationModal.alert('¡Agregado!', `${product.nombre} ha sido agregado al carrito correctamente.`);
+    Toast.show(`${product.nombre} ha sido agregado al carrito correctamente`, 'success');
   }
 }
 

@@ -2,6 +2,7 @@ import { cartService } from '../services/cartService.js';
 import { orderService } from '../services/orderService.js';
 import { airtableService } from '../services/airtableService.js';
 import { confirmationModal } from '../components/ConfirmationModal.js';
+import { toggleLoading } from '../utils/helpers.js';
 
 export class CheckoutController {
   constructor() {
@@ -102,6 +103,8 @@ export class CheckoutController {
     if (!(await this.validateForm())) return;
 
     try {
+      toggleLoading(this.confirmBtn, true);
+
       const customerData = {
         nombre: this.nameInput.value,
         email: this.emailInput.value,
@@ -118,6 +121,7 @@ export class CheckoutController {
         if (!product || item.cantidad > product.stock) {
           const stockMsg = product ? `Disponible: ${product.stock}` : 'Producto no encontrado';
           await confirmationModal.alert('Stock insuficiente', `Stock insuficiente para ${item.nombre}. ${stockMsg}`);
+          toggleLoading(this.confirmBtn, false);
           throw new Error('Stock insuficiente');
         }
       }
@@ -128,6 +132,13 @@ export class CheckoutController {
         this.selectedPaymentMethod
       );
 
+      // Actualizar stock de productos
+      for (const item of cartItems) {
+        const product = await airtableService.getRecord('Productos', item.product_id);
+        const newStock = product.stock - item.cantidad;
+        await airtableService.updateRecord('Productos', item.product_id, { stock: newStock });
+      }
+
       cartService.clearCart();
 
       if (this.selectedPaymentMethod === 'mercadopago') {
@@ -137,6 +148,7 @@ export class CheckoutController {
       }
     } catch (error) {
       console.error('Checkout Error:', error);
+      toggleLoading(this.confirmBtn, false);
       if (error.message !== 'Stock insuficiente') {
         await confirmationModal.alert('Error', 'Error procesando el pedido. Por favor, intenta nuevamente.');
       }

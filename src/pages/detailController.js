@@ -2,6 +2,7 @@ import { airtableService } from '../services/airtableService.js';
 import { cartService } from '../services/cartService.js';
 import { confirmationModal } from '../components/ConfirmationModal.js';
 import { Skeleton } from '../components/SkeletonLoader.js';
+import { Toast } from '../components/Toast.js';
 
 export class DetailController {
   constructor() {
@@ -45,7 +46,13 @@ export class DetailController {
 
       Skeleton.renderProductDetail(this.content);
 
-      this.product = await airtableService.getRecord('Productos', productId);
+      const [product, categories] = await Promise.all([
+        airtableService.getRecord('Productos', productId),
+        airtableService.getCategories()
+      ]);
+
+      this.product = product;
+      this.categories = categories;
       this.renderProduct();
     } catch (error) {
       this.content.innerHTML = '<div class="text-center py-5"><p class="text-danger">Error cargando producto</p></div>';
@@ -56,6 +63,11 @@ export class DetailController {
     if (!this.product) return;
 
     const product = this.product;
+    
+    // Resolver nombre de categoría
+    const categoryId = Array.isArray(product.categoria_id) ? product.categoria_id[0] : product.categoria_id;
+    const category = this.categories?.find(c => c.id === categoryId);
+    const categoryName = category ? category.nombre : (categoryId || 'General');
     
     // Procesar atributos
     let colorsHtml = '';
@@ -102,7 +114,7 @@ export class DetailController {
         </div>
         <div class="col-12 col-md-6">
           <h1 class="mb-3">${product.nombre}</h1>
-          <div class="mb-3"><span class="badge bg-secondary">${product.categoria_id || 'General'}</span></div>
+          <div class="mb-3"><span class="badge bg-secondary">${categoryName}</span></div>
           <div class="mb-4"><span class="fs-3 fw-bold text-success">$${product.precio}</span></div>
           <div class="mb-4 p-3 bg-light rounded">
             <strong id="stock-status">${isOutOfStock ? 'Producto no disponible' : `Stock disponible: ${product.stock}`}</strong>
@@ -122,9 +134,9 @@ export class DetailController {
             </div>
           </div>
            <div class="d-grid gap-3 d-md-flex">
-             <button class="btn btn-outline-primary btn-lg flex-grow-1 fw-bold" id="add-to-cart-btn" ${isOutOfStock ? 'disabled' : ''}>🛒 Agregar al carrito</button>
-             <button class="btn btn-primary btn-lg flex-grow-1 fw-bold" id="buy-now-btn" ${isOutOfStock ? 'disabled' : ''}>⚡ Comprar ahora</button>
-           </div>
+              <button class="btn btn-outline-primary btn-lg flex-grow-1 fw-bold" id="add-to-cart-btn" ${isOutOfStock ? 'disabled' : ''}>🛒 Agregar al carrito</button>
+              <button class="btn btn-primary btn-lg flex-grow-1 fw-bold" id="buy-now-btn" ${isOutOfStock ? 'disabled' : ''}>⚡ Comprar ahora</button>
+            </div>
         </div>
       </div>
     `;
@@ -202,7 +214,7 @@ export class DetailController {
 
     try {
       cartService.addToCart(this.product, this.quantity, this.selectedColor, this.selectedSize);
-      confirmationModal.alert('¡Agregado!', `${this.product.nombre} ha sido agregado al carrito correctamente.`);
+      Toast.show(`${this.product.nombre} ha sido agregado al carrito correctamente`, 'success');
       const cartBtn = document.querySelector('[data-bs-target="#cartOffcanvas"]');
       if (cartBtn) cartBtn.click();
       this.quantity = 1;

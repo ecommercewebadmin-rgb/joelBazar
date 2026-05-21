@@ -12,6 +12,18 @@ export class AdminProductsController {
   init() {
     this.loadInitialData();
     this.setupEventListeners();
+    this.setupModalListeners();
+  }
+
+  setupModalListeners() {
+    const modalEl = document.getElementById('productModal');
+    if (modalEl) {
+      modalEl.addEventListener('hide.bs.modal', () => {
+        if (document.activeElement) {
+          document.activeElement.blur();
+        }
+      });
+    }
   }
 
   setupEventListeners() {
@@ -176,7 +188,18 @@ export class AdminProductsController {
         await airtableService.createRecord('Productos', data);
       }
 
-      bootstrap.Modal.getInstance(document.getElementById('productModal')).hide();
+      // Eliminar el foco del botón antes de cerrar el modal para evitar el error de aria-hidden
+      if (document.activeElement) {
+        document.activeElement.blur();
+      }
+
+      const modalElement = document.getElementById('productModal');
+      const modalInstance = bootstrap.Modal.getInstance(modalElement);
+      if (modalInstance) {
+        modalInstance.hide();
+      }
+      document.getElementById('product-form').reset();
+      
       await this.loadInitialData();
     } catch (error) {
       confirmationModal.alert('Error', 'Hubo un problema al guardar el producto. Por favor, verifica los datos e intenta nuevamente.');
