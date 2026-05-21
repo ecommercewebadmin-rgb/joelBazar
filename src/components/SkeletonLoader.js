@@ -40,4 +40,45 @@ export class Skeleton {
 
     container.innerHTML = html;
   }
+
+  static renderTableSkeleton(container, columns = 5, rows = 5) {
+    if (!container) return;
+
+    const headerHtml = `
+      <thead class="table-light">
+        <tr>${Array(columns).fill('<th></th>').join('')}</tr>
+      </thead>
+    `;
+
+    const rowsHtml = Array(rows)
+      .fill(0)
+      .map(
+        () => `
+        <tr>
+          ${Array(columns).fill('<td><div class="skeleton skeleton-text" style="width: 80%; margin: 0;"></div></td>').join('')}
+        </tr>
+      `)
+      .join('');
+
+    container.innerHTML = `
+      <table class="table table-hover align-middle">
+        ${headerHtml}
+        <tbody>${rowsHtml}</tbody>
+      </table>
+    `;
+  }
+
+  static renderTbodySkeleton(tbody, columns = 5, rows = 5) {
+    if (!tbody) return;
+
+    tbody.innerHTML = Array(rows)
+      .fill(0)
+      .map(
+        () => `
+        <tr>
+          ${Array(columns).fill('<td><div class="skeleton skeleton-text" style="width: 80%; margin: 0;"></div></td>').join('')}
+        </tr>
+      `)
+      .join('');
+  }
 }

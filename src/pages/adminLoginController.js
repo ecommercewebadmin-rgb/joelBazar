@@ -2,7 +2,7 @@ import { authService } from '../services/authService.js';
 
 export class AdminLoginController {
   constructor() {
-    this.init();
+    // Initialización movida a init() para asegurar que el DOM esté listo
   }
 
   init() {
@@ -11,9 +11,25 @@ export class AdminLoginController {
     this.passwordInput = document.getElementById('admin-password');
     this.errorDiv = document.getElementById('login-error');
     this.cancelBtn = document.getElementById('cancel-login-btn');
+    this.togglePasswordBtn = document.getElementById('toggle-password');
 
     this.form?.addEventListener('submit', e => this.handleLogin(e));
     this.cancelBtn?.addEventListener('click', () => window.location.hash = '#/home');
+    
+    if (this.togglePasswordBtn) {
+      this.togglePasswordBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        this.togglePasswordVisibility();
+      });
+    }
+  }
+
+  togglePasswordVisibility() {
+    if (!this.passwordInput || !this.togglePasswordBtn) return;
+    
+    const isPassword = this.passwordInput.type === 'password';
+    this.passwordInput.type = isPassword ? 'text' : 'password';
+    this.togglePasswordBtn.textContent = isPassword ? '🙈' : '👁️';
   }
 
   async handleLogin(e) {

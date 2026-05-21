@@ -1,5 +1,7 @@
 import { airtableService } from '../services/airtableService.js';
 import { confirmationModal } from '../components/ConfirmationModal.js';
+import { toggleLoading } from '../utils/helpers.js';
+import { Skeleton } from '../components/SkeletonLoader.js';
 
 export class AdminProductsController {
   constructor() {
@@ -25,10 +27,11 @@ export class AdminProductsController {
       }
 
       if (e.target.classList.contains('btn-delete')) {
-        const productId = e.target.dataset.productId;
+        const btn = e.target;
+        const productId = btn.dataset.productId;
         confirmationModal.confirm('Eliminar Producto', '¿Estás seguro de que deseas eliminar este producto? Esta acción no se puede deshacer.', { danger: true }).then(confirmed => {
           if (confirmed) {
-            this.deleteProduct(productId);
+            this.deleteProduct(productId, btn);
           }
         });
       }
@@ -40,17 +43,47 @@ export class AdminProductsController {
   }
 
   async loadInitialData() {
+    const tbody = document.getElementById('products-tbody');
+    Skeleton.renderTbodySkeleton(tbody, 5);
+
     try {
       const [products, categories] = await Promise.all([
         airtableService.getProducts(),
-        airtableService.getCategories()
+        airtableService.getCategories(),
       ]);
       this.products = products;
       this.categories = categories;
+      
+      // Sembrar categorías básicas si solo hay una o ninguna
+      if (this.categories.length <= 1) {
+        await this.seedDefaultCategories();
+      }
+      
       this.renderTable();
     } catch (error) {
-      alert('Error cargando datos iniciales');
+      if (tbody) tbody.innerHTML = '<tr><td colspan="5" class="text-center text-danger">Error cargando datos iniciales</td></tr>';
     }
+  }
+
+  async seedDefaultCategories() {
+    const defaultCategories = [
+      'Ropa', 'Calzado', 'Accesorios', 'Hogar y Decoración', 
+      'Electrónica', 'Belleza', 'Juguetes', 'Papelería', 'Deportes'
+    ];
+    
+    const existingNames = this.categories.map(c => c.nombre.toLowerCase());
+    
+    for (const cat of defaultCategories) {
+      if (!existingNames.includes(cat.toLowerCase())) {
+        try {
+          await airtableService.createRecord('Categorias', { nombre: cat });
+        } catch (e) {
+          console.error(`Error sembrando categoría ${cat}:`, e);
+        }
+      }
+    }
+    // Recargar categorías después de sembrar
+    this.categories = await airtableService.getCategories();
   }
 
   renderTable() {
@@ -65,13 +98,15 @@ export class AdminProductsController {
           
           return `
           <tr>
-            <td>${p.nombre}</td>
+            <td class="fw-semibold">${p.nombre}</td>
             <td>${categoryName}</td>
             <td>$${p.precio}</td>
             <td>${p.stock}</td>
-            <td>
-              <button class="btn btn-sm btn-primary btn-edit" data-product-id="${p.id}">Editar</button>
-              <button class="btn btn-sm btn-danger btn-delete" data-product-id="${p.id}">Eliminar</button>
+            <td class="text-end">
+              <div class="d-flex justify-content-end gap-2">
+                <button class="btn btn-sm btn-outline-primary btn-edit" data-product-id="${p.id}">Editar</button>
+                <button class="btn btn-sm btn-outline-danger btn-delete" data-product-id="${p.id}">Eliminar</button>
+              </div>
             </td>
           </tr>
         `;
@@ -115,6 +150,7 @@ export class AdminProductsController {
 
   async saveProduct() {
     const form = document.getElementById('product-form');
+    const saveBtn = document.getElementById('save-product-btn');
     if (!form.checkValidity()) {
       form.reportValidity();
       return;
@@ -133,6 +169,7 @@ export class AdminProductsController {
     };
 
     try {
+      toggleLoading(saveBtn, true);
       if (productId) {
         await airtableService.updateRecord('Productos', productId, data);
       } else {
@@ -140,18 +177,23 @@ export class AdminProductsController {
       }
 
       bootstrap.Modal.getInstance(document.getElementById('productModal')).hide();
-      this.loadInitialData();
+      await this.loadInitialData();
     } catch (error) {
       confirmationModal.alert('Error', 'Hubo un problema al guardar el producto. Por favor, verifica los datos e intenta nuevamente.');
+    } finally {
+      toggleLoading(saveBtn, false);
     }
   }
 
-  async deleteProduct(productId) {
+  async deleteProduct(productId, btn) {
     try {
+      toggleLoading(btn, true);
       await airtableService.deleteProduct(productId);
-      this.loadInitialData();
+      await this.loadInitialData();
     } catch (error) {
       confirmationModal.alert('Error', 'No se pudo eliminar el producto.');
+    } finally {
+      toggleLoading(btn, false);
     }
   }
 }

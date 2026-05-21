@@ -1,4 +1,6 @@
 import { airtableService } from '../services/airtableService.js';
+import { toggleLoading } from '../utils/helpers.js';
+import { Skeleton } from '../components/SkeletonLoader.js';
 
 export class AdminOrdersController {
   constructor() {
@@ -25,11 +27,14 @@ export class AdminOrdersController {
   }
 
   async loadOrders() {
+    const tbody = document.getElementById('orders-tbody');
+    Skeleton.renderTbodySkeleton(tbody, 6);
+
     try {
       this.orders = await airtableService.getOrders();
       this.renderTable();
     } catch (error) {
-      alert('Error cargando órdenes');
+      if (tbody) tbody.innerHTML = '<tr><td colspan="6" class="text-center text-danger">Error cargando órdenes</td></tr>';
     }
   }
 
@@ -71,14 +76,17 @@ export class AdminOrdersController {
     const newStatus = document.getElementById('order-status').value;
 
     try {
+      toggleLoading(updateBtn, true);
       await airtableService.updateRecord('Ordenes', orderId, {
         estado: newStatus,
       });
 
       bootstrap.Modal.getInstance(document.getElementById('orderModal')).hide();
-      this.loadOrders();
+      await this.loadOrders();
     } catch (error) {
       alert('Error actualizando orden');
+    } finally {
+      toggleLoading(updateBtn, false);
     }
   }
 

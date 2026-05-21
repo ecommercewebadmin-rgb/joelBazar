@@ -7,6 +7,7 @@ import { getAdminLoginController } from './pages/adminLoginController.js';
 import { getAdminProductsController } from './pages/adminProductsController.js';
 import { getAdminOrdersController } from './pages/adminOrdersController.js';
 import { authService } from './services/authService.js';
+import { confirmationModal } from './components/ConfirmationModal.js';
 
 export class App {
   constructor() {
@@ -28,7 +29,11 @@ export class App {
       }
 
       if (e.target.id === 'nav-login') {
-        window.location.hash = '#/login';
+        if (authService.isAuthenticated()) {
+          window.location.hash = '#/admin';
+        } else {
+          window.location.hash = '#/login';
+        }
       }
     });
 
@@ -96,9 +101,12 @@ export class App {
         getAdminProductsController().init();
         getAdminOrdersController().init();
         
-        document.getElementById('logout-btn')?.addEventListener('click', () => {
-          authService.logout();
-          this.navigate('#/home');
+        document.getElementById('logout-btn')?.addEventListener('click', async () => {
+          const confirmed = await confirmationModal.confirm('Cerrar Sesión', '¿Estás seguro de que deseas cerrar la sesión del administrador?');
+          if (confirmed) {
+            authService.logout();
+            this.navigate('#/home');
+          }
         });
       }
     }

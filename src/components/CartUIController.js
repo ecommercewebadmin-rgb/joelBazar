@@ -49,37 +49,56 @@ export class CartUIController {
     if (!this.itemsContainer) return;
 
     if (cart.length === 0) {
-      this.itemsContainer.innerHTML = '<p class="text-muted text-center">Tu carrito está vacío</p>';
+      this.itemsContainer.innerHTML = `
+        <div class="text-center py-5">
+          <div class="mb-3">
+            <span style="font-size: 4rem; opacity: 0.5;">🛒</span>
+          </div>
+          <h5 class="fw-bold text-dark">Tu carrito está vacío</h5>
+          <p class="text-muted">Parece que aún no has agregado productos.</p>
+        </div>
+      `;
       if (this.checkoutBtn) this.checkoutBtn.disabled = true;
+      if (this.clearBtn) this.clearBtn.disabled = true;
       if (this.cartCountBadge) this.cartCountBadge.textContent = '0';
       if (this.totalElement) this.totalElement.textContent = '$0';
       return;
     }
 
     if (this.checkoutBtn) this.checkoutBtn.disabled = false;
+    if (this.clearBtn) this.clearBtn.disabled = false;
     if (this.cartCountBadge) this.cartCountBadge.textContent = cartService.getItemCount();
     if (this.totalElement) this.totalElement.textContent = `$${total.toLocaleString('es-AR')}`;
 
     const html = cart
       .map(
         item => `
-      <div class="card mb-2 cart-item-card position-relative">
-        <button class="btn btn-sm cart-remove-btn" data-item-key="${item.itemKey}">×</button>
-        <div class="card-body d-flex gap-3">
-          <img src="${item.imagen_url}" class="cart-item-img" alt="${item.nombre}" style="width: 50px; height: 50px; object-fit: cover;">
-          <div class="cart-item-info flex-grow-1">
-            <h6 class="mb-1">${item.nombre}</h6>
-            ${item.selectedColor ? `<small class="text-muted">Color: ${item.selectedColor}</small><br>` : ''}
-            ${item.selectedSize ? `<small class="text-muted">Talla: ${item.selectedSize}</small><br>` : ''}
-            <strong>$${item.precio}</strong>
-          </div>
-          <div class="cart-quantity-row d-flex flex-column align-items-end">
-            <div class="cart-quantity-controls d-flex">
-              <button class="btn btn-sm btn-outline-secondary qty-decrease" data-item-key="${item.itemKey}">−</button>
-              <input type="text" class="form-control form-control-sm cart-quantity-value" value="${item.quantity}" readonly style="width: 40px; text-align: center;">
-              <button class="btn btn-sm btn-outline-secondary qty-increase" data-item-key="${item.itemKey}">+</button>
+      <div class="card mb-3 border-0 shadow-sm cart-item-card">
+        <div class="card-body p-3">
+          <div class="d-flex gap-3">
+            <img src="${item.imagen_url}" class="rounded" alt="${item.nombre}" style="width: 70px; height: 70px; object-fit: cover;">
+            <div class="flex-grow-1">
+              <div class="d-flex justify-content-between align-items-start">
+                <h6 class="mb-1 fw-bold">${item.nombre}</h6>
+                <button class="btn btn-link text-danger p-0 text-decoration-none fs-6 cart-remove-btn" data-item-key="${item.itemKey}" title="Eliminar">🗑️</button>
+              </div>
+              <div class="text-muted small mb-2">
+                ${item.selectedColor ? `<span>🎨 ${item.selectedColor}</span>` : ''}
+                ${item.selectedColor && item.selectedSize ? ' • ' : ''}
+                ${item.selectedSize ? `<span>📏 ${item.selectedSize}</span>` : ''}
+              </div>
+              <div class="d-flex justify-content-between align-items-center">
+                <span class="fw-bold text-success">$${item.precio.toLocaleString('es-AR')}</span>
+                <div class="d-flex align-items-center gap-2">
+                  <button class="btn btn-sm btn-outline-secondary qty-decrease" data-item-key="${item.itemKey}">−</button>
+                  <span class="fw-semibold" style="min-width: 20px; text-align: center;">${item.quantity}</span>
+                  <button class="btn btn-sm btn-outline-secondary qty-increase" data-item-key="${item.itemKey}">+</button>
+                </div>
+              </div>
+              <div class="text-end mt-2">
+                <small class="text-muted">Subtotal: <span class="fw-semibold text-dark">$${(item.precio * item.quantity).toLocaleString('es-AR')}</span></small>
+              </div>
             </div>
-            <small class="text-muted mt-2">Subtotal: $${(item.precio * item.quantity).toLocaleString('es-AR')}</small>
           </div>
         </div>
       </div>

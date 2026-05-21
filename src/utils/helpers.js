@@ -54,3 +54,20 @@ export function getQueryParam(param) {
   const params = new URLSearchParams(window.location.search);
   return params.get(param);
 }
+
+export function toggleLoading(button, isLoading, originalText = null) {
+  if (!button) return;
+  
+  if (isLoading) {
+    button.disabled = true;
+    if (originalText === null) button.dataset.originalText = button.innerHTML;
+    button.innerHTML = `
+      <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+      <span class="ms-1">Cargando...</span>
+    `;
+  } else {
+    button.disabled = false;
+    const text = originalText || button.dataset.originalText || 'Guardar';
+    button.innerHTML = text;
+  }
+}

@@ -121,10 +121,10 @@ export class DetailController {
               <button class="btn btn-outline-secondary" id="qty-increase">+</button>
             </div>
           </div>
-          <div class="d-grid gap-2 d-md-flex">
-            <button class="btn btn-success btn-lg flex-grow-1" id="add-to-cart-btn" ${isOutOfStock ? 'disabled' : ''}>Agregar al carrito</button>
-            <button class="btn btn-outline-primary btn-lg" id="buy-now-btn" ${isOutOfStock ? 'disabled' : ''}>Comprar ahora</button>
-          </div>
+           <div class="d-grid gap-3 d-md-flex">
+             <button class="btn btn-outline-primary btn-lg flex-grow-1 fw-bold" id="add-to-cart-btn" ${isOutOfStock ? 'disabled' : ''}>🛒 Agregar al carrito</button>
+             <button class="btn btn-primary btn-lg flex-grow-1 fw-bold" id="buy-now-btn" ${isOutOfStock ? 'disabled' : ''}>⚡ Comprar ahora</button>
+           </div>
         </div>
       </div>
     `;

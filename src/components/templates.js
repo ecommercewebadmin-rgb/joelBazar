@@ -24,61 +24,45 @@ export const templates = {
       </nav>
     </header>
     <div class="offcanvas offcanvas-end" tabindex="-1" id="cartOffcanvas">
-      <div class="offcanvas-header border-bottom">
-        <h5 class="offcanvas-title">Tu Carrito</h5>
+      <div class="offcanvas-header border-bottom bg-light">
+        <h5 class="offcanvas-title fw-bold">🛒 Mi Carrito</h5>
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
       </div>
-      <div class="offcanvas-body d-flex flex-column">
-        <div id="cart-items-container"><p class="text-muted text-center">Tu carrito está vacío</p></div>
-        <div class="mt-auto pt-3 border-top">
-          <div class="d-flex justify-content-between align-items-center mb-3">
-            <strong>Total:</strong><span class="fs-5 fw-bold text-success" id="cart-total">$0</span>
+      <div class="offcanvas-body d-flex flex-column p-0">
+        <div id="cart-items-container" class="flex-grow-1 p-3">
+          <div class="text-center py-5">
+            <div class="mb-3">
+              <span style="font-size: 4rem; opacity: 0.5;">🛒</span>
+            </div>
+            <h5 class="fw-bold text-dark">Tu carrito está vacío</h5>
+            <p class="text-muted">Parece que aún no has agregado productos.</p>
           </div>
-          <button class="btn btn-primary w-100 mb-2" id="checkout-btn" disabled>Ir al pago</button>
-          <button class="btn btn-outline-danger w-100" id="clear-cart-btn">Vaciar carrito</button>
+        </div>
+        <div class="p-3 border-top bg-light">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <span class="text-muted">Total estimado:</span>
+            <span class="fs-4 fw-bold text-success" id="cart-total">$0</span>
+          </div>
+          <div class="d-grid gap-2">
+            <button class="btn btn-primary btn-lg fw-bold" id="checkout-btn" disabled>Finalizar Compra</button>
+            <button class="btn btn-link btn-sm text-danger text-decoration-none" id="clear-cart-btn">Vaciar carrito</button>
+          </div>
         </div>
       </div>
     </div>
   `,
   footer: `
     <footer id="site-footer" class="bg-light border-top mt-5 py-5">
-      <div class="container">
-        <div class="row mb-4">
-          <div class="col-md-3 mb-4 mb-md-0">
-            <h6 class="fw-bold mb-3">Secciones</h6>
-            <ul class="list-unstyled">
-              <li class="mb-2"><a href="#/" class="text-decoration-none">Home</a></li>
-              <li class="mb-2"><a href="#/" class="text-decoration-none">Productos</a></li>
-              <li class="mb-2"><a href="#/" class="text-decoration-none">Contacto</a></li>
-            </ul>
-          </div>
-          <div class="col-md-3 mb-4 mb-md-0">
-            <h6 class="fw-bold mb-3">Información</h6>
-            <ul class="list-unstyled">
-              <li class="mb-2"><a href="#/" class="text-decoration-none">Sobre nosotros</a></li>
-              <li class="mb-2"><a href="#/" class="text-decoration-none">Política de privacidad</a></li>
-              <li class="mb-2"><a href="#/" class="text-decoration-none">Términos de servicio</a></li>
-            </ul>
-          </div>
-          <div class="col-md-3 mb-4 mb-md-0">
-            <h6 class="fw-bold mb-3">Conecta con nosotros</h6>
-            <div class="d-flex gap-3">
-              <a href="https://instagram.com" target="_blank" class="text-decoration-none fs-5" id="social-instagram">📷 Instagram</a>
-              <a href="mailto:contacto@example.com" class="text-decoration-none fs-5" id="social-email">✉️ Email</a>
-              <a href="https://wa.me" target="_blank" class="text-decoration-none fs-5" id="social-whatsapp">💬 WhatsApp</a>
-            </div>
-          </div>
-          <div class="col-md-3">
-            <h6 class="fw-bold mb-3">Newsletter</h6>
-            <p class="text-muted small">Suscríbete para recibir novedades</p>
-            <div class="input-group input-group-sm">
-              <input type="email" class="form-control" placeholder="Tu email" id="newsletter-input">
-              <button class="btn btn-primary" type="button" id="newsletter-btn">Suscribir</button>
-            </div>
-          </div>
+      <div class="container text-center">
+        <h6 class="fw-bold mb-4 text-uppercase" style="letter-spacing: 1px; color: #6c757d;">Conecta con nosotros</h6>
+        <div class="d-flex flex-wrap justify-content-center gap-4 mb-4">
+          <a href="https://instagram.com" target="_blank" class="text-decoration-none text-muted fs-6" id="social-instagram">📷 Instagram</a>
+          <a href="mailto:contacto@example.com" class="text-decoration-none text-muted fs-6" id="social-email">✉️ Email</a>
+          <a href="https://wa.me" target="_blank" class="text-decoration-none text-muted fs-6" id="social-whatsapp">💬 WhatsApp</a>
+          <a href="tel:+5491112345678" class="text-decoration-none text-muted fs-6">📞 +54 9 11 1234-5678</a>
         </div>
-        <div class="border-top pt-4 text-center text-muted small">
-          <p>&copy; 2025 joelBazar. Todos los derechos reservados.</p>
+        <div class="border-top pt-4 text-muted small">
+          <p class="mb-0">&copy; 2025 joelBazar. Todos los derechos reservados.</p>
         </div>
       </div>
     </footer>
@@ -92,13 +76,16 @@ export const templates = {
         </section>
         <section class="mb-4">
           <form class="search-form d-flex gap-2" id="search-form">
-            <input type="text" class="form-control form-control-lg" placeholder="Buscar productos..." id="search-input" autocomplete="off">
-            <button class="btn btn-primary btn-lg" type="submit">🔍 Buscar</button>
+            <div class="input-group shadow-sm rounded-pill overflow-hidden" style="max-width: 600px; margin: 0 auto; width: 100%;">
+              <span class="input-group-text bg-white border-end-0 px-3" style="border-radius: 50px 0 0 50px;">🔍</span>
+              <input type="text" class="form-control border-start-0 ps-0" placeholder="Buscar productos..." id="search-input" autocomplete="off">
+              <button class="btn btn-primary px-4 fw-semibold" type="submit">Buscar</button>
+            </div>
           </form>
         </section>
         <section class="mb-5">
-          <h5 class="mb-3">Categorías</h5>
-          <div class="d-flex gap-2 flex-wrap" id="categories-container">
+          <h5 class="mb-3 text-center">Categorías</h5>
+          <div class="d-flex gap-2 flex-wrap justify-content-center" id="categories-container">
             <button class="btn btn-outline-primary active" data-category="all">Todas</button>
           </div>
         </section>
@@ -114,7 +101,9 @@ export const templates = {
   'product-detail-view': `
     <main id="product-detail-view" class="py-4">
       <div class="container">
-        <button class="btn btn-link px-0 mb-4" id="back-btn">← Volver al catálogo</button>
+        <button class="btn btn-outline-secondary mb-4 d-inline-flex align-items-center gap-2" id="back-btn">
+          ← <span class="d-none d-sm-inline">Volver al catálogo</span><span class="d-inline d-sm-none">Volver</span>
+        </button>
         <div id="detail-content">
           <!-- El contenido se cargará dinámicamente aquí -->
         </div>
@@ -222,24 +211,40 @@ export const templates = {
     </main>
   `,
   'admin-login-view': `
-    <main id="admin-login-view" class="py-5">
+    <main id="admin-login-view" class="py-5 bg-light" style="min-height: 90vh; display: flex; align-items: center;">
       <div class="container">
         <div class="row justify-content-center">
-          <div class="col-12 col-md-6 col-lg-4">
-            <div class="text-center mb-5">
-              <h2 class="fw-bold mb-2">⚙️ Panel Admin</h2>
-              <p class="text-muted">Ingresa tus credenciales</p>
+          <div class="col-12 col-md-8 col-lg-5">
+            <div class="text-center mb-4">
+              <div class="display-6 mb-2">⚙️</div>
+              <h2 class="fw-bold">Panel Administrativo</h2>
+              <p class="text-muted">Ingresa tus credenciales para gestionar la tienda</p>
             </div>
-            <form id="admin-login-form" class="card shadow-sm">
-              <div class="card-body p-4">
-                <div class="mb-3"><label class="form-label">Usuario</label><input type="text" class="form-control form-control-lg" id="admin-username" placeholder="Tu usuario" required></div>
-                <div class="mb-4"><label class="form-label">Contraseña</label><input type="password" class="form-control form-control-lg" id="admin-password" placeholder="Tu contraseña" required></div>
-                <div id="login-error" class="alert alert-danger d-none mb-3"></div>
-                <button type="submit" class="btn btn-primary btn-lg w-100 mb-2">Iniciar sesión</button>
-                <button type="button" class="btn btn-outline-secondary btn-lg w-100" id="cancel-login-btn">Volver</button>
+            <form id="admin-login-form" class="card shadow border-0">
+              <div class="card-body p-4 p-md-5">
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Usuario</label>
+                  <div class="input-group">
+                    <span class="input-group-text bg-white text-muted">👤</span>
+                    <input type="text" class="form-control form-control-lg" id="admin-username" placeholder="Tu usuario" required>
+                  </div>
+                </div>
+                <div class="mb-4">
+                  <label class="form-label fw-semibold">Contraseña</label>
+                  <div class="input-group">
+                    <span class="input-group-text bg-white text-muted">🔒</span>
+                    <input type="password" class="form-control form-control-lg" id="admin-password" placeholder="********" required>
+                    <button class="btn btn-outline-secondary" type="button" id="toggle-password">👁️</button>
+                  </div>
+                </div>
+                <div id="login-error" class="alert alert-danger d-none mb-3 py-2 small"></div>
+                <div class="d-grid gap-2">
+                  <button type="submit" class="btn btn-primary btn-lg fw-bold">Entrar al Panel</button>
+                  <button type="button" class="btn btn-link text-muted" id="cancel-login-btn">Volver a la tienda</button>
+                </div>
               </div>
             </form>
-            <p class="text-muted text-center mt-4 small">¿Olvidaste tu contraseña? Contacta con soporte.</p>
+            <p class="text-center mt-4 text-muted small">&copy; 2025 joelBazar Admin</p>
           </div>
         </div>
       </div>
@@ -247,90 +252,152 @@ export const templates = {
   `,
   'admin-dashboard-view': `
     <main id="admin-dashboard-view" class="py-4">
-      <div class="container-fluid">
-        <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
-          <h2>📊 Dashboard Admin</h2>
-          <button class="btn btn-outline-danger" id="logout-btn">Salir</button>
+      <div class="container-fluid px-4">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 pb-3 border-bottom gap-3">
+          <div>
+            <h2 class="fw-bold mb-0">📊 Dashboard Admin</h2>
+            <p class="text-muted mb-0 small">Gestiona tu inventario y pedidos en tiempo real</p>
+          </div>
+          <button class="btn btn-outline-danger fw-semibold" id="logout-btn">🔴 Cerrar Sesión</button>
         </div>
-        <ul class="nav nav-tabs mb-4" role="tablist">
+        
+        <ul class="nav nav-pills mb-4 gap-2" role="tablist">
           <li class="nav-item" role="presentation">
-            <button class="nav-link active" id="products-tab" data-bs-toggle="tab" data-bs-target="#products-panel" type="button">📦 Productos</button>
+            <button class="nav-link active d-flex align-items-center gap-2" id="products-tab" data-bs-toggle="tab" data-bs-target="#products-panel" type="button">
+              <span>📦</span> Productos
+            </button>
           </li>
           <li class="nav-item" role="presentation">
-            <button class="nav-link" id="orders-tab" data-bs-toggle="tab" data-bs-target="#orders-panel" type="button">📋 Órdenes</button>
+            <button class="nav-link d-flex align-items-center gap-2" id="orders-tab" data-bs-toggle="tab" data-bs-target="#orders-panel" type="button">
+              <span>📋</span> Órdenes
+            </button>
           </li>
         </ul>
+
         <div class="tab-content">
           <div class="tab-pane fade show active" id="products-panel" role="tabpanel">
-            <div class="row mb-4">
-              <div class="col-12 d-flex justify-content-between align-items-center">
-                <h4>Gestión de Productos</h4>
-                <button class="btn btn-success" id="new-product-btn">➕ Nuevo Producto</button>
+            <div class="card border-0 shadow-sm">
+              <div class="card-body p-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                  <h4 class="fw-bold mb-0">Gestión de Productos</h4>
+                  <button class="btn btn-success fw-bold" id="new-product-btn">➕ Nuevo Producto</button>
+                </div>
+                <div class="table-responsive">
+                  <table class="table table-hover align-middle" id="products-table">
+                    <thead class="table-light">
+                      <tr>
+                        <th class="py-3">Nombre</th>
+                        <th class="py-3">Categoría</th>
+                        <th class="py-3">Precio</th>
+                        <th class="py-3">Stock</th>
+                        <th class="py-3 text-end">Acciones</th>
+                      </tr>
+                    </thead>
+                    <tbody id="products-tbody"></tbody>
+                  </table>
+                </div>
               </div>
             </div>
-            <div class="table-responsive">
-              <table class="table table-hover" id="products-table">
-                <thead class="table-light">
-                  <tr><th>Nombre</th><th>Categoría</th><th>Precio</th><th>Stock</th><th>Acciones</th></tr>
-                </thead>
-                <tbody id="products-tbody"></tbody>
-              </table>
-            </div>
+            
             <div class="modal fade" id="productModal" tabindex="-1">
-              <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h5 class="modal-title" id="productModalTitle">Nuevo Producto</h5>
+              <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content border-0 shadow">
+                  <div class="modal-header bg-light">
+                    <h5 class="modal-title fw-bold" id="productModalTitle">Nuevo Producto</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                   </div>
-                  <div class="modal-body">
+                  <div class="modal-body p-4">
                     <form id="product-form">
-                      <div class="mb-3"><label class="form-label">Nombre *</label><input type="text" class="form-control" id="product-name" required></div>
-                      <div class="mb-3"><label class="form-label">Descripción *</label><textarea class="form-control" id="product-description" rows="3" required></textarea></div>
-                      <div class="row">
-                        <div class="col-md-6 mb-3"><label class="form-label">Precio (ARS) *</label><input type="number" class="form-control" id="product-price" step="0.01" required></div>
-                        <div class="col-md-6 mb-3"><label class="form-label">Stock *</label><input type="number" class="form-control" id="product-stock" required></div>
+                      <div class="row g-3">
+                        <div class="col-12">
+                          <label class="form-label fw-semibold">Nombre del producto *</label>
+                          <input type="text" class="form-control form-control-lg" id="product-name" placeholder="Ej. Camiseta Algodón" required>
+                        </div>
+                        <div class="col-12">
+                          <label class="form-label fw-semibold">Descripción *</label>
+                          <textarea class="form-control" id="product-description" rows="3" placeholder="Describe las características del producto..." required></textarea>
+                        </div>
+                        <div class="col-md-6">
+                          <label class="form-label fw-semibold">Precio (ARS) *</label>
+                          <div class="input-group">
+                            <span class="input-group-text">$</span>
+                            <input type="number" class="form-control" id="product-price" step="0.01" placeholder="0.00" required>
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <label class="form-label fw-semibold">Stock *</label>
+                          <input type="number" class="form-control" id="product-stock" placeholder="0" required>
+                        </div>
+                        <div class="col-md-6">
+                          <label class="form-label fw-semibold">Categoría *</label>
+                          <select class="form-select" id="product-category" required>
+                            <option value="">Seleccionar categoría</option>
+                          </select>
+                        </div>
+                        <div class="col-md-6">
+                          <label class="form-label fw-semibold">URL de imagen</label>
+                          <input type="url" class="form-control" id="product-image" placeholder="https://...">
+                        </div>
+                        <div class="col-md-6">
+                          <label class="form-label fw-semibold">Colores (JSON)</label>
+                          <input type="text" class="form-control" id="product-colors" placeholder='["Rojo", "Azul"]'>
+                        </div>
+                        <div class="col-md-6">
+                          <label class="form-label fw-semibold">Tallas (JSON)</label>
+                          <input type="text" class="form-control" id="product-sizes" placeholder='["S", "M", "L"]'>
+                        </div>
                       </div>
-                      <div class="mb-3"><label class="form-label">Categoría *</label><select class="form-select" id="product-category" required><option value="">Seleccionar categoría</option></select></div>
-                      <div class="mb-3"><label class="form-label">URL de imagen</label><input type="url" class="form-control" id="product-image"></div>
-                      <div class="mb-3"><label class="form-label">Colores (JSON, opcional)</label><input type="text" class="form-control" id="product-colors" placeholder='["rojo", "azul"]'></div>
-                      <div class="mb-3"><label class="form-label">Tallas (JSON, opcional)</label><input type="text" class="form-control" id="product-sizes" placeholder='["XS", "S", "M", "L"]'></div>
                     </form>
                   </div>
-                  <div class="modal-footer">
+                  <div class="modal-footer bg-light">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary" id="save-product-btn">Guardar</button>
+                    <button type="button" class="btn btn-primary fw-bold" id="save-product-btn">Guardar Producto</button>
                   </div>
                 </div>
               </div>
             </div>
           </div>
+          
           <div class="tab-pane fade" id="orders-panel" role="tabpanel">
-            <h4 class="mb-4">Gestión de Órdenes</h4>
-            <div class="table-responsive">
-              <table class="table table-hover" id="orders-table">
-                <thead class="table-light">
-                  <tr><th>Orden</th><th>Cliente</th><th>Total</th><th>Método</th><th>Estado</th><th>Acciones</th></tr>
-                </thead>
-                <tbody id="orders-tbody"></tbody>
-              </table>
+            <div class="card border-0 shadow-sm">
+              <div class="card-body p-4">
+                <h4 class="fw-bold mb-4">Gestión de Órdenes</h4>
+                <div class="table-responsive">
+                  <table class="table table-hover align-middle" id="orders-table">
+                    <thead class="table-light">
+                      <tr>
+                        <th class="py-3">Orden</th>
+                        <th class="py-3">Cliente</th>
+                        <th class="py-3">Total</th>
+                        <th class="py-3">Método</th>
+                        <th class="py-3">Estado</th>
+                        <th class="py-3 text-end">Acciones</th>
+                      </tr>
+                    </thead>
+                    <tbody id="orders-tbody"></tbody>
+                  </table>
+                </div>
+              </div>
             </div>
+            
             <div class="modal fade" id="orderModal" tabindex="-1">
-              <div class="modal-dialog">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h5 class="modal-title">Actualizar Orden</h5>
+              <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content border-0 shadow">
+                  <div class="modal-header bg-light">
+                    <h5 class="modal-title fw-bold">Actualizar Orden</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                   </div>
-                  <div class="modal-body">
-                    <div class="mb-3">
-                      <p><strong>Orden:</strong> <span id="order-id"></span></p>
-                      <p><strong>Cliente:</strong> <span id="order-client"></span></p>
-                      <p><strong>Total:</strong> <span id="order-total"></span></p>
+                  <div class="modal-body p-4">
+                    <div class="bg-light p-3 rounded mb-4">
+                      <div class="row g-2">
+                        <div class="col-6 text-muted small">ID Orden:</div><div class="col-6 fw-bold" id="order-id"></div>
+                        <div class="col-6 text-muted small">Cliente:</div><div class="col-6 fw-bold" id="order-client"></div>
+                        <div class="col-6 text-muted small">Total:</div><div class="col-6 fw-bold text-success" id="order-total"></div>
+                      </div>
                     </div>
                     <div class="mb-3">
-                      <label class="form-label">Estado *</label>
-                      <select class="form-select" id="order-status">
+                      <label class="form-label fw-semibold">Cambiar Estado de la Orden *</label>
+                      <select class="form-select form-select-lg" id="order-status">
                         <option value="pendiente">⏳ Pendiente</option>
                         <option value="pagado">✅ Pagado</option>
                         <option value="enviado">📦 Enviado</option>
@@ -339,9 +406,9 @@ export const templates = {
                       </select>
                     </div>
                   </div>
-                  <div class="modal-footer">
+                  <div class="modal-footer bg-light">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary btn-update-order" id="update-order-btn">Actualizar</button>
+                    <button type="button" class="btn btn-primary fw-bold btn-update-order" id="update-order-btn">Actualizar Estado</button>
                   </div>
                 </div>
               </div>

@@ -90,8 +90,7 @@ export class HomeController {
         .map(
           cat => `
         <button class="btn btn-outline-primary ${
-          this.activeCategory === cat.id ? 'active' : ''
-        }" data-category="${cat.id}">
+          this.activeCategory === cat.id ? 'active' : ''}" data-category="${cat.id}">
           ${cat.nombre}
         </button>
       `
@@ -158,8 +157,8 @@ export class HomeController {
         product => `
       <div class="col-12 col-sm-6 col-lg-4">
         <div class="card h-100 shadow-sm">
-          <img src="${product.imagen_url}" class="card-img-top object-fit-cover" 
-               alt="${product.nombre}" style="height: 220px; object-fit: contain;">
+           <img src="${product.imagen_url}" class="card-img-top" 
+                alt="${product.nombre}" style="height: 220px; object-fit: contain; width: 100%; background-color: #f8f9fa;">
           <div class="card-body d-flex flex-column">
             <h5 class="card-title">${product.nombre}</h5>
             <p class="card-text text-muted small">${product.descripcion?.substring(0, 100)}...</p>
@@ -167,18 +166,17 @@ export class HomeController {
               <span class="fw-bold fs-5 text-success">$${product.precio}</span>
               <small class="text-muted">Stock: ${product.stock}</small>
             </div>
-            <div class="d-flex gap-2 mt-2">
-              <button class="btn btn-outline-primary btn-sm flex-grow-1 btn-view-detail" 
-                      data-product-id="${product.id}">
-                Ver
-              </button>
-               <button class="btn btn-success btn-sm btn-add-to-cart" 
-                      data-product-id="${product.id}"
-                      ${product.stock <= 0 ? 'disabled' : ''}>
-                 ${product.stock <= 0 ? 'Agotado' : 'Agregar'}
+             <div class="d-flex gap-2 mt-3">
+               <button class="btn btn-light border flex-grow-1 fw-semibold btn-view-detail" 
+                       data-product-id="${product.id}">
+                 Ver detalle
                </button>
-
-            </div>
+                <button class="btn btn-primary flex-grow-1 fw-semibold btn-add-to-cart" 
+                       data-product-id="${product.id}"
+                       ${product.stock <= 0 ? 'disabled' : ''}>
+                  ${product.stock <= 0 ? 'Agotado' : 'Agregar'}
+                </button>
+             </div>
           </div>
         </div>
       </div>
