@@ -17,7 +17,7 @@ export const templates = {
           <div class="collapse navbar-collapse" id="navbarContent">
             <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
               <li class="nav-item"><a class="nav-link active" href="#/" id="nav-home">Home</a></li>
-              <li class="nav-item"><button class="nav-link btn btn-link" id="nav-login">Iniciar sesión (Admin)</button></li>
+              <li class="nav-item"><button class="nav-link btn btn-link" id="nav-login">Iniciar sesión</button></li>
             </ul>
           </div>
         </div>
@@ -244,7 +244,7 @@ export const templates = {
                 </div>
               </div>
             </form>
-            <p class="text-center mt-4 text-muted small">&copy; 2025 joelBazar Admin</p>
+            <p class="text-center mt-4 text-muted small">Si tenes problema para iniciar sesión consulta al administrador de la cuenta</p>
           </div>
         </div>
       </div>
