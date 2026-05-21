@@ -134,10 +134,10 @@ export const templates = {
                 </div>
               </div>
               <h5 class="mb-3">Método de pago</h5>
-              <div class="form-check mb-3">
-                <input class="form-check-input" type="radio" name="payment-method" id="payment-mercadopago" value="mercadopago">
-                <label class="form-check-label w-100 p-2 border rounded" for="payment-mercadopago"><strong>💳 MercadoPago</strong><p class="text-muted small mb-0">Tarjeta débito/crédito, dinero en cuenta, etc.</p></label>
-              </div>
+               <div class="form-check mb-3 d-none">
+                 <input class="form-check-input" type="radio" name="payment-method" id="payment-mercadopago" value="mercadopago">
+                 <label class="form-check-label w-100 p-2 border rounded" for="payment-mercadopago"><strong>💳 MercadoPago</strong><p class="text-muted small mb-0">Tarjeta débito/crédito, dinero en cuenta, etc.</p></label>
+               </div>
               <div class="form-check mb-3">
                 <input class="form-check-input" type="radio" name="payment-method" id="payment-bbva" value="transferencia_bbva">
                 <label class="form-check-label w-100 p-2 border rounded" for="payment-bbva"><strong>🏦 Transferencia Bancaria BBVA</strong><p class="text-muted small mb-0">Recibe los datos después de confirmar</p></label>
